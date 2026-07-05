@@ -16,6 +16,3 @@ Next:
 - level design
 - assets and stuff
 - 
-
-![gif](https://postimg.cc/gallery/37FdCWV)
-~~~~
