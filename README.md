@@ -13,6 +13,7 @@ Built with Unreal Engine 5.7 (movement influenced heavily by epics GASP)
 
 Next:
 - bots should probably damage players
+- gameover/ spectate
 - level design
 - assets and stuff
 - 
