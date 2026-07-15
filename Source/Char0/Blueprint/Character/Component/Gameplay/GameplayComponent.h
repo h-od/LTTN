@@ -22,12 +22,6 @@ class CHAR0_API UGameplayComponent : public UActorComponent
 	
 	UPROPERTY()
 	ALttnCharacter* Character;
-
-	UPROPERTY()
-	int32 CurrentHealth = 0;
-
-	UPROPERTY()
-	int32 BotDamage = 0;
 	
 	UPROPERTY()
 	bool bFireRateCooldownActive = false;
@@ -111,7 +105,7 @@ public:
 	
 	void LevelStarted();
 	void SetMaxHealth();
-	void TakeDamage(const FVector& DamageDirection);
+	void TakeDamage(const float Damage,const FVector& DamageDirection);
 	void StartFiring();
 	void StopFiring();
 	void Reload();

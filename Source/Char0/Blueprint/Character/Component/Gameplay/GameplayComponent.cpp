@@ -18,7 +18,7 @@ void UGameplayComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// UKismetSystemLibrary::PrintString(GetWorld(), "UGameplayComponent::BeginPlay \n\t " + PlayerManager.Player.ToString() + " \n\t " + PlayerManager.Weapon.ToString(), true, true, FLinearColor::Red,
-	                                  // 25.0f);
+	// 25.0f);
 }
 
 void UGameplayComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -57,7 +57,7 @@ void UGameplayComponent::SetNewPlayerInfo()
 
 void UGameplayComponent::LevelStarted()
 {
-	BotDamage++;
+	// BotDamage++;
 }
 
 void UGameplayComponent::SetMaxHealth()
@@ -65,20 +65,19 @@ void UGameplayComponent::SetMaxHealth()
 	PlayerManager.SetPlayerHealthMax();
 }
 
-void UGameplayComponent::TakeDamage(const FVector& DamageDirection)
+void UGameplayComponent::TakeDamage(const float Damage, const FVector& DamageDirection)
 {
 	constexpr float Knockback = 500;
 
 	Cast<ACharacter>(GetOwner())->LaunchCharacter(FVector(DamageDirection.X, DamageDirection.Y, 0.0f) * Knockback, true, false);
 
-	CurrentHealth -= -1 * BotDamage;
-
-	if (CurrentHealth <= 0)
+	if (const float NewHealth = PlayerManager.UpdatePlayerHealth(-1 * Damage); NewHealth <= 0)
 	{
 		GetCharacter()->PlayerDead();
 	}
 	else
 	{
+		GetCharacter()->SetPlayerHealth(NewHealth);
 		GetWorld()->GetTimerManager().ClearTimer(HealthCooldownTimerHandle);
 		GetWorld()->GetTimerManager().ClearTimer(HealthRegenTimerHandle);
 		GetWorld()->GetTimerManager().SetTimer(HealthCooldownTimerHandle, this, &UGameplayComponent::BeginHealthRegen,
@@ -90,7 +89,7 @@ void UGameplayComponent::StartFiring()
 {
 	//if !isAiming then aim first then fire
 
-	if (bIsReloading or bFireRateCooldownActive)
+	if (bIsReloading or bFireRateCooldownActive /*or bIsAiming*/)
 	{
 		//TODO cant if sprinting, need to be aiming too
 		return;
@@ -261,8 +260,7 @@ void UGameplayComponent::IncrementHealth()
 {
 	if (PlayerManager.Player.Health < PlayerManager.Player.MaxHealth)
 	{
-		PlayerManager.Player.Health++;
-		PlayerManager.UpdatePlayerHealth(PlayerManager.Player.Health / PlayerManager.Player.MaxHealth);
+		GetCharacter()->SetPlayerHealth(PlayerManager.IncrementPlayerHealth());
 	}
 	else
 	{

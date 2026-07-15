@@ -55,27 +55,106 @@ float ABotCharacter::TakeDamage(float Damage, const FDamageEvent& DamageEvent, A
 
 float ABotCharacter::Attack()
 {
+	MC_Attack();
+	
 	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
 	{
-		float AnimDuration = AnimInstance->Montage_Play(AttackAnim);
-		//TODO start sphere trace for attack -> also attack right or left
+		const float AnimDuration = AnimInstance->Montage_Play(AttackAnim);
+		StartWeaponTrace(AnimDuration);
 		return AnimDuration;
 	}
-	else
+	return 0.0f;
+}
+
+void ABotCharacter::MC_Attack_Implementation()
+{
+	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
 	{
-		return 0.0f;
+		const float AnimDuration = AnimInstance->Montage_Play(AttackAnim);
+		StartWeaponTrace(AnimDuration);
 	}
 }
 
-void ABotCharacter::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse,
-                              const FHitResult& Hit)
+void ABotCharacter::StartWeaponTrace(const float Duration)
 {
-	//TODO instead of this, do sphere trace around hands for duration of attack anim
-	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
-	if (!bIsDying and Other->IsA(ALttnCharacter::StaticClass()))
+	WeaponTraceDuration = Duration;
+	WeaponTraceInterval = Duration / 250;
+	GetWorldTimerManager().ClearTimer(WeaponTraceTimerHandle);
+	GetWorldTimerManager().SetTimer(WeaponTraceTimerHandle, this, &ABotCharacter::DoWeaponTrace, WeaponTraceInterval, true);
+}
+
+void ABotCharacter::DoWeaponTrace()
+{
+	WeaponTraceCurrent += WeaponTraceInterval;
+
+	if (WeaponTraceCurrent <= WeaponTraceInterval * 50) //wee delay so it doesn't hit on the back swing
 	{
-		UGameplayStatics::ApplyDamage(Other, HitDamage, GetInstigator()->Controller, this, UDamageType::StaticClass());
+		return;
 	}
+
+	const bool bHitRight = AttackHitRight.GetActor() != nullptr and AttackHitRight.GetActor()->IsA(ALttnCharacter::StaticClass());
+	const bool bHitLeft = AttackHitLeft.GetActor() != nullptr and AttackHitLeft.GetActor()->IsA(ALttnCharacter::StaticClass());
+
+	if (WeaponTraceCurrent >= WeaponTraceDuration or bHitRight or bHitLeft)
+	{
+		AttackFinished();
+		return;
+	}
+
+	TArray<TEnumAsByte<EObjectTypeQuery>> TraceObjectTypes;
+	TraceObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
+
+	TArray<AActor*> ToIgnore;
+	ToIgnore.Add(this);
+
+	if (bShouldAttackRight)
+	{
+		const FVector RightSocket = GetMesh()->GetSocketLocation(FName("hand_r"));
+
+		FHitResult OutHit;
+		const bool bHit = UKismetSystemLibrary::SphereTraceSingleForObjects(GetWorld(), RightSocket, RightSocket, 10.0f, TraceObjectTypes, false, ToIgnore, EDrawDebugTrace::Type::ForDuration, OutHit,
+		                                                                    true,
+		                                                                    FLinearColor::Red, FLinearColor::Green, 1.0);
+
+		if (bHit and OutHit.GetActor()->IsA(ALttnCharacter::StaticClass()))
+		{
+			AttackHitRight = OutHit;
+			return;
+		}
+	}
+
+	if (!bShouldAttackRight)
+	{
+		const FVector LeftSocket = GetMesh()->GetSocketLocation(FName("hand_l"));
+		FHitResult OtherOutHit;
+		const bool bAnotherHit = UKismetSystemLibrary::SphereTraceSingleForObjects(GetWorld(), LeftSocket, LeftSocket, 10.0f, TraceObjectTypes, false, ToIgnore, EDrawDebugTrace::Type::ForDuration,
+		                                                                           OtherOutHit, true, FLinearColor::Red, FLinearColor::Green, 1.0);
+		if (bAnotherHit and OtherOutHit.GetActor()->IsA(ALttnCharacter::StaticClass()))
+		{
+			AttackHitLeft = OtherOutHit;
+		}
+	}
+}
+
+void ABotCharacter::AttackFinished()
+{
+	GetWorldTimerManager().ClearTimer(WeaponTraceTimerHandle);
+	WeaponTraceCurrent = 0;
+	WeaponTraceDuration = 0;
+	WeaponTraceInterval = 0;
+
+	if (AttackHitRight.GetActor() != nullptr and AttackHitRight.GetActor()->IsA(ALttnCharacter::StaticClass()))
+	{
+		UGameplayStatics::ApplyPointDamage(AttackHitRight.GetActor(), 1.0F/*HitDamage*/, AttackHitRight.ImpactPoint, AttackHitRight, GetController(), this, nullptr);
+	}
+
+	if (AttackHitLeft.GetActor() != nullptr and AttackHitLeft.GetActor()->IsA(ALttnCharacter::StaticClass()))
+	{
+		UGameplayStatics::ApplyPointDamage(AttackHitLeft.GetActor(), HitDamage, AttackHitLeft.ImpactPoint, AttackHitLeft, GetController(), this, nullptr);
+	}
+
+	AttackHitRight = FHitResult();
+	AttackHitLeft = FHitResult();
 }
 
 void ABotCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

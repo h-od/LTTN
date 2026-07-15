@@ -184,7 +184,8 @@ public:
 	void PlayerReloaded(int32 WeaponProjectileCount, int32 PlayerProjectileCount) const;
 	void SetMaxHealth();
 	void StaminaDepleted();
-	void SetPlayerStamina(float Stamina) const;
+	void SetPlayerStamina(float NewValue) const;
+	void SetPlayerHealth(float NewValue) const;
 	void ShowScore(int32 CurrentScore, int32 Cost) const;
 	void ShowMaxPlayerProjectiles(int32 MaxProjectiles) const;
 	void ShowMaxWeaponProjectiles(int32 MaxProjectiles) const;

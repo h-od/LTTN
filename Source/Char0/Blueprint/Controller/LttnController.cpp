@@ -65,6 +65,11 @@ void ALttnController::PlayerReloaded(const int32 WeaponProjectileCount, const in
 
 void ALttnController::SetPlayerHealth(const float Health) const
 {
+	Client_SetPlayerHealth(Health);
+}
+
+void ALttnController::Client_SetPlayerHealth_Implementation(const float Health) const
+{
 	HUD->SetHealth(Health);
 }
 

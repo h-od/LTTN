@@ -46,6 +46,9 @@ public:
 	void PlayerIsReloading(float ReloadTime) const;
 	void PlayerReloaded(int32 WeaponProjectileCount, int32 PlayerProjectileCount) const;
 	void SetPlayerHealth(float Health) const;
+	UFUNCTION(Client, Reliable)
+	void Client_SetPlayerHealth(float Health) const;
+	void Client_SetPlayerHealth_Implementation(float Health) const;
 	void SetPlayerStamina(float Stamina) const;
 	void ShowScore(int32 CurrentScore, int32 Cost) const;
 	void ShowMaxPlayerProjectiles(int32 MaxProjectiles) const;

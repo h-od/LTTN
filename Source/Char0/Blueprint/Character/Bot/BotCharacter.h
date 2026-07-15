@@ -22,6 +22,22 @@ class CHAR0_API ABotCharacter : public ACharacter
 	int32 LastDamagedPlayerId;
 	UPROPERTY()
 	bool bIsDying;
+	
+	UPROPERTY()
+	FTimerHandle WeaponTraceTimerHandle;
+	UPROPERTY()
+	float WeaponTraceDuration;
+	UPROPERTY()
+	float WeaponTraceInterval;
+	UPROPERTY()
+	float WeaponTraceCurrent;
+	UPROPERTY()
+	bool bShouldAttackRight = true;
+
+	UPROPERTY()
+	FHitResult AttackHitRight;
+	UPROPERTY()
+	FHitResult AttackHitLeft;
 
 	UPROPERTY()
 	TEnumAsByte<ECollisionEnabled::Type> CapsuleCollision;
@@ -51,9 +67,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float Attack();
-	virtual void NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved,
-	                       FVector HitLocation, FVector HitNormal, FVector NormalImpulse,
-	                       const FHitResult& Hit) override;
+	UFUNCTION(NetMulticast, Reliable)
+	void MC_Attack();
+	void MC_Attack_Implementation();
+	void StartWeaponTrace(float Duration);
+	void DoWeaponTrace();
+	void AttackFinished();
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 

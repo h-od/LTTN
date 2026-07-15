@@ -83,6 +83,7 @@ public:
 	float UpdateStamina(int Delta);
 	void SetPlayerHealthMax();
 	float UpdatePlayerHealth(int32 Delta);
+	float IncrementPlayerHealth();
 	int32 AddScore(int32 Delta);
 
 private:

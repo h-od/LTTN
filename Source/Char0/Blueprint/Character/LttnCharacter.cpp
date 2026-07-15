@@ -164,7 +164,7 @@ float ALttnCharacter::TakeDamage(const float Damage, const FDamageEvent& DamageE
 {
 	if (DamageCauser->IsA(ABotCharacter::StaticClass()))
 	{
-		GameplayComponent->TakeDamage(DamageCauser->GetActorForwardVector());
+		GameplayComponent->TakeDamage(Damage, DamageCauser->GetActorForwardVector());
 	}
 	return Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 }
@@ -285,9 +285,17 @@ void ALttnCharacter::StaminaDepleted()
 	Server_InputStateUpdated(InputState);
 }
 
-void ALttnCharacter::SetPlayerStamina(const float Stamina) const
+void ALttnCharacter::SetPlayerStamina(const float NewValue) const
 {
-	LttnController->SetPlayerStamina(Stamina);
+	LttnController->SetPlayerStamina(NewValue);
+}
+
+void ALttnCharacter::SetPlayerHealth(const float NewValue) const
+{
+	if (LttnController)
+	{
+		LttnController->SetPlayerHealth(NewValue);
+	}
 }
 
 void ALttnCharacter::ShowScore(const int32 CurrentScore, const int32 Cost) const
@@ -396,7 +404,7 @@ void ALttnCharacter::MoveTriggered(const FInputActionValue& InputActionValue)
 	const FVector2D ScaleValue = UKismetMathLibrary::Normal2D(Input);
 
 	// UKismetSystemLibrary::PrintString(GetWorld(), "ALttnCharacter::Look_GamepadTriggered X: " + FString::SanitizeFloat(ScaleValue.X) + ", Y: " + FString::SanitizeFloat(ScaleValue.X), true, true, FLinearColor::Red, 5.0f);
-	
+
 	AddMovementInput(RightVector, ScaleValue.X, false);
 	AddMovementInput(ForwardVector, ScaleValue.Y, false);
 }

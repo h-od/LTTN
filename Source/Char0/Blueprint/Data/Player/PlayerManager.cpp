@@ -287,7 +287,13 @@ void FPlayerManager::SetPlayerHealthMax()
 float FPlayerManager::UpdatePlayerHealth(const int32 Delta)
 {
 	Player.Health += Delta;
-	return Player.Health;
+	return Player.Health/ Player.MaxHealth;
+}
+
+float FPlayerManager::IncrementPlayerHealth()
+{
+	Player.Health += 1;
+	return Player.Health/ Player.MaxHealth;
 }
 
 int32 FPlayerManager::AddScore(const int32 Delta)
