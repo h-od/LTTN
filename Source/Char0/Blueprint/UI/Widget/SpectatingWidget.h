@@ -9,4 +9,5 @@ class CHAR0_API USpectatingWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
+	//TODO needed?
 };

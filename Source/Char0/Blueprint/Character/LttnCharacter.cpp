@@ -164,9 +164,14 @@ float ALttnCharacter::TakeDamage(const float Damage, const FDamageEvent& DamageE
 {
 	if (DamageCauser->IsA(ABotCharacter::StaticClass()))
 	{
-		GameplayComponent->TakeDamage(Damage, DamageCauser->GetActorForwardVector());
+		Client_TakeDamage(Damage, DamageCauser);
 	}
 	return Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+}
+
+void ALttnCharacter::Client_TakeDamage_Implementation(const float Damage, AActor* DamageCauser)
+{
+	GameplayComponent->TakeDamage(Damage, DamageCauser->GetActorForwardVector());
 }
 
 void ALttnCharacter::SetNewPlayerInfo()
@@ -251,7 +256,8 @@ void ALttnCharacter::StoppedMoving()
 
 void ALttnCharacter::PlayerDead()
 {
-	//TODO is anyone alive? Spectate else summary
+	bIsDead = true;
+	GetLttnController()->PlayerDead();
 }
 
 void ALttnCharacter::UpdateWeaponProjectiles(const int32 Count) const

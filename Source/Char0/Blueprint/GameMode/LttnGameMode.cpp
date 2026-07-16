@@ -8,7 +8,7 @@
 #include "Char0/Blueprint/State/Game/LttnGameState.h"
 #include "Kismet/GameplayStatics.h"
 
-void ALttnGameMode::Spawn(ALttnController* LttnController, bool bRespawn)
+void ALttnGameMode::Spawn(ALttnController* LttnController, const bool bRespawn)
 {
 	FTransform SpawnTransform;
 	if (bRespawn)
@@ -41,7 +41,6 @@ void ALttnGameMode::DecrementBots(const int32 PlayerId)
 	{
 		State->LevelCompleted();
 		State->bCanStartNewLevel = true;
-		// also open/close door/ doors
 	}
 	if (!GameplayManager.IsLevelComplete() and WaveInfo.AllDestroyed() and GameplayManager.HasNextWave())
 	{
@@ -76,7 +75,6 @@ void ALttnGameMode::StartGame()
 			return;
 		}
 	}
-	// GameplayManager.StartLevel();
 	ADoor* ExtDoor = Doors[-1];
 	ExtDoor->OnDoorCloseCompleteDelegate.AddDynamic(this, &ALttnGameMode::ExtDoorClosed);
 	ExtDoor->CloseDoor();
@@ -125,20 +123,26 @@ void ALttnGameMode::PlayerDead(const int32 PlayerId)
 				AlivePlayerIds.Add(AlivePlayerId.Key);
 			}
 		}
+		Players[PlayerId]->StartSpectate(AlivePlayerIds.Top());
 	}
 }
 
-void ALttnGameMode::ResPlayer(int32 RessingPlayerId, int32 PlayerToRessId)
+APawn* ALttnGameMode::GetPlayerPawn(const int32 PlayerId)
+{
+	return Players[PlayerId]->GetPawn();
+}
+
+void ALttnGameMode::ResPlayer(int32 RevivingPlayerId, int32 PlayerToReviveId)
 {
 	for (const auto Player : Players)
 	{
-		if (Player->Id == PlayerToRessId)
+		if (Player->Id == PlayerToReviveId)
 		{
-			PlayersAlive[PlayerToRessId] = true;
+			PlayersAlive[PlayerToReviveId] = true;
 
 			Spawn(Player, true);
 
-			State->RevivedPlayer(RessingPlayerId);
+			State->RevivedPlayer(RevivingPlayerId);
 		}
 	}
 }
@@ -166,12 +170,11 @@ void ALttnGameMode::OnPostLogin(AController* NewPlayer)
 	LttnController->Id = PlayerId;
 	UpdatePlayerLocation(PlayerId, -2); // (-2 = lobby)
 
-	PlayersAlive.Add(PlayerId, true); //TODO don't know why this needs to be map?
+	PlayersAlive.Add(PlayerId, true); 
 
 
 	FindAndSetSpawnAreas(); //TODO just do once 
 	Spawn(LttnController, false);
-	// FindAndPossessCamera(LttnController);
 }
 
 void ALttnGameMode::FindAndSetDoors()
@@ -246,6 +249,7 @@ void ALttnGameMode::StartWave()
 
 void ALttnGameMode::Server_UpdateBotSpawnLocation_Implementation()
 {
+	//TODO but not if player dead
 	int ClosestToHead = 11;
 	for (const TTuple Location : PlayersLocation)
 	{

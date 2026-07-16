@@ -74,8 +74,10 @@ public:
 	void StartLevel();
 
 	void PlayerDead(int32 PlayerId);
+	
+	APawn* GetPlayerPawn(int32 PlayerId);
 
-	void ResPlayer(int32 RessingPlayerId, int32 PlayerToRessId);
+	void ResPlayer(int32 RevivingPlayerId, int32 PlayerToReviveId);
 
 protected:
 	virtual void BeginPlay() override;

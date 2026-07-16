@@ -7,7 +7,6 @@
 #include "Char0/Blueprint/UI/Widget/FadeWidget.h"
 #include "Char0/Blueprint/UI/Widget/OverlayWidget.h"
 #include "Char0/Blueprint/UI/Widget/SpectatingWidget.h"
-#include "Char0/Blueprint/UI/Widget/StartWidget.h"
 
 void ALttnHud::BeginPlay()
 {
@@ -83,7 +82,7 @@ void ALttnHud::ShowInteract(const bool bShow) const
 
 void ALttnHud::ShowSpectating(bool bShow)
 {
-	//TODO remove overlay and replace with Spectation overlay
+	//TODO remove overlay and replace with Spectating overlay
 }
 
 void ALttnHud::ShowCantStartGame()

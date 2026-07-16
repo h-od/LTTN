@@ -5,6 +5,10 @@
 #include "GameFramework/PlayerController.h"
 #include "LttnController.generated.h"
 
+class ALttnGameState;
+class UPauseWidget;
+class UGameSummaryWidget;
+class ASpectateCharacter;
 class ALttnGameMode;
 class ALttnHud;
 class ALttnCharacter;
@@ -22,7 +26,16 @@ class CHAR0_API ALttnController : public APlayerController
 	UPROPERTY()
 	ALttnHud* HUD;
 	UPROPERTY()
+	ALttnGameState* GameState;
+	
+	UPROPERTY()
 	ALttnCharacter*  ActorToDestroyOnRevive;
+	UPROPERTY()
+	bool bIsSpectating = false;
+	UPROPERTY()
+	ASpectateCharacter* SpectatePawn;
+	UPROPERTY()
+	int32 CurrentlySpectating;
 	
 public:
 	UPROPERTY(Replicated)
@@ -31,6 +44,14 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input Mappings")
 	TArray<UInputMappingContext*> MappingContexts;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UGameSummaryWidget> SummaryWidgetClass;
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UPauseWidget> PauseWidgetClass;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Spectate")
+	TSubclassOf<ASpectateCharacter> SpectatorClass;
 	
 	virtual void BeginPlay() override;
 	
@@ -61,6 +82,11 @@ public:
 	void StartGame();
 	void StartLevel();
 
+	void PlayerDead();
+	UFUNCTION(Server, Reliable)
+	void Server_PlayerDead();
+	void Server_PlayerDead_Implementation();
+	void StartSpectate(const int32 SpectateId);
 	bool HasRagDoll() const;
 	void DestroyRagdoll();
 	void GameOver(bool bIsMulti);

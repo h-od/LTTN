@@ -162,6 +162,10 @@ public:
 	virtual void Landed(const FHitResult& Hit) override;
 
 	virtual float TakeDamage(float Damage, const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	
+	UFUNCTION(Client, Reliable)
+	void Client_TakeDamage(float Damage, AActor* DamageCauser);
+	void Client_TakeDamage_Implementation(float Damage, AActor* DamageCauser);
 
 	void SetNewPlayerInfo();
 

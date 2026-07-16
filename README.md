@@ -13,6 +13,8 @@ Built with Unreal Engine 5.7 (movement influenced heavily by epics GASP)
 
 Next:
 - gameover/ spectate
-- level design
+- UI
+- health/ damage component-> shared between ai and player
+- level design / blockouts
 - assets and stuff
 - 

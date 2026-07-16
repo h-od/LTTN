@@ -2,13 +2,19 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "Char0/Blueprint/Character/LttnCharacter.h"
+#include "Char0/Blueprint/Character/Spectate/SpectateCharacter.h"
 #include "Char0/Blueprint/GameMode/LttnGameMode.h"
+#include "Char0/Blueprint/State/Game/LttnGameState.h"
 #include "Char0/Blueprint/UI/HUD/LttnHud.h"
+#include "Char0/Blueprint/UI/Widget/GameSummaryWidget.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 void ALttnController::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	GameState = Cast<ALttnGameState>(GetWorld()->GetGameState());
 }
 
 void ALttnController::SetupInputComponent()
@@ -128,6 +134,37 @@ void ALttnController::StartLevel()
 	Server_StartLevel();
 }
 
+void ALttnController::PlayerDead()
+{
+	Server_PlayerDead();
+}
+
+void ALttnController::Server_PlayerDead_Implementation()
+{
+	GetLttnGameMode()->PlayerDead(Id);
+}
+
+void ALttnController::StartSpectate(const int32 SpectateId)
+{
+	if (bIsSpectating)
+	{
+		return;
+	}
+	bIsSpectating = true;
+	ActorToDestroyOnRevive = Cast<ALttnCharacter>(GetCharacter());
+	UnPossess();
+	CurrentlySpectating = SpectateId;
+	APawn* CharacterToSpectate = GetLttnGameMode()->GetPlayerPawn(SpectateId);
+
+	UE_LOG(LogTemp, Warning, TEXT("ACombatPlayerController::AttachSpectatorToSpectateId %s"), *CharacterToSpectate->GetName());
+	
+	FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::DontSpawnIfColliding;
+	SpectatePawn = GetWorld()->SpawnActor<ASpectateCharacter>(SpectatorClass, CharacterToSpectate->GetActorLocation(), CharacterToSpectate->GetControlRotation(), SpawnParams);
+	Possess(SpectatePawn);
+	SpectatePawn->Attach(CharacterToSpectate);
+}
+
 bool ALttnController::HasRagDoll() const
 {
 	return ActorToDestroyOnRevive != nullptr;
@@ -142,7 +179,7 @@ void ALttnController::DestroyRagdoll()
 	}
 }
 
-void ALttnController::GameOver(bool bIsMulti)
+void ALttnController::GameOver(const bool bIsMulti)
 {
 	Client_GameOver(bIsMulti);
 }
@@ -176,9 +213,21 @@ void ALttnController::Client_CantStartGame_Implementation()
 	HUD->ShowCantStartGame();
 }
 
-void ALttnController::Client_GameOver_Implementation(bool bIsMulti)
+void ALttnController::Client_GameOver_Implementation(const bool bIsMulti)
 {
-	//todo add fade to black then show stats
+	UE_LOG(LogTemp, Warning, TEXT("Client_GameOver_Implementation HasAuthority: %s, IsLocalPlayerController: %s"), HasAuthority()?TEXT("true"):TEXT("false"),
+		   IsLocalPlayerController()?TEXT("true"):TEXT("false"));
+	SetInputMode(FInputModeUIOnly());
+	SetShowMouseCursor(true);
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
+
+	UGameSummaryWidget* SummaryWidget = Cast<UGameSummaryWidget>(CreateWidget(GetWorld(), SummaryWidgetClass));
+	// FString String = GameState->GetSummary().ToString(); TODO
+
+	SummaryWidget->AddToViewport();
+	SummaryWidget->ShowSummary(
+		FText::FromString(GameState->GetSummary(Id, bIsMulti)) 
+	);
 }
 
 ALttnGameMode* ALttnController::GetLttnGameMode()

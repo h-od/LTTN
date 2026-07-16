@@ -69,6 +69,7 @@ void UGameplayComponent::TakeDamage(const float Damage, const FVector& DamageDir
 {
 	constexpr float Knockback = 500;
 
+	//todo player hit instead, or as well?
 	Cast<ACharacter>(GetOwner())->LaunchCharacter(FVector(DamageDirection.X, DamageDirection.Y, 0.0f) * Knockback, true, false);
 
 	if (const float NewHealth = PlayerManager.UpdatePlayerHealth(-1 * Damage); NewHealth <= 0)

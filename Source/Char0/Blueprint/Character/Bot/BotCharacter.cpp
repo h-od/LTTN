@@ -56,7 +56,7 @@ float ABotCharacter::TakeDamage(float Damage, const FDamageEvent& DamageEvent, A
 float ABotCharacter::Attack()
 {
 	MC_Attack();
-	
+
 	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
 	{
 		const float AnimDuration = AnimInstance->Montage_Play(AttackAnim);
@@ -262,7 +262,10 @@ void ABotCharacter::OnHealthUpdated()
 		// Dead(LastDamagedPlayerId);
 		bIsDying = true;
 		SetDead(true);
-		LttnGameMode->DecrementBots(LastDamagedPlayerId);
+		if (HasAuthority())
+		{
+			LttnGameMode->DecrementBots(LastDamagedPlayerId);
+		}
 	}
 }
 
