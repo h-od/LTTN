@@ -178,9 +178,11 @@ public:
 
 	//GameplayComponent
 	FPlayerManager GetPlayerManager() const;
+	void SetPlayerInfo(const FPlayerManager& PlayerManager);
 	void StartedMoving();
 	void StoppedMoving();
 	void PlayerDead();
+	void SetRagDoll();
 	void UpdateWeaponProjectiles(int32 Count) const;
 	UFUNCTION(BlueprintNativeEvent)
 	FVector GetWeaponLocation();

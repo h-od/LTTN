@@ -102,6 +102,7 @@ public:
 	FPlayerManager GetPlayerManager() const;
 	
 	void SetNewPlayerInfo();
+	void SetPlayerInfo(const FPlayerManager& NewValue);
 	
 	void LevelStarted();
 	void SetMaxHealth();

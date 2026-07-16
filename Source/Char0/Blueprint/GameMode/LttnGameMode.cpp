@@ -23,6 +23,7 @@ void ALttnGameMode::Spawn(ALttnController* LttnController, const bool bRespawn)
 
 	if (LttnController->HasRagDoll())
 	{
+		LttnCharacter->SetPlayerInfo(LttnController->GetPlayerManager());
 		LttnController->DestroyRagdoll();
 		LttnCharacter->SetMaxHealth();
 	}
@@ -132,7 +133,7 @@ APawn* ALttnGameMode::GetPlayerPawn(const int32 PlayerId)
 	return Players[PlayerId]->GetPawn();
 }
 
-void ALttnGameMode::ResPlayer(int32 RevivingPlayerId, int32 PlayerToReviveId)
+void ALttnGameMode::RevivePlayer(const int32 RevivingPlayerId, const int32 PlayerToReviveId)
 {
 	for (const auto Player : Players)
 	{
@@ -173,7 +174,7 @@ void ALttnGameMode::OnPostLogin(AController* NewPlayer)
 	PlayersAlive.Add(PlayerId, true); 
 
 
-	FindAndSetSpawnAreas(); //TODO just do once 
+	FindAndSetSpawnAreas(); 
 	Spawn(LttnController, false);
 }
 

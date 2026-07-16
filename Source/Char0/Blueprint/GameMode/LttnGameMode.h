@@ -77,7 +77,7 @@ public:
 	
 	APawn* GetPlayerPawn(int32 PlayerId);
 
-	void ResPlayer(int32 RevivingPlayerId, int32 PlayerToReviveId);
+	void RevivePlayer(int32 RevivingPlayerId, int32 PlayerToReviveId);
 
 protected:
 	virtual void BeginPlay() override;

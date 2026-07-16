@@ -22,6 +22,7 @@
 #include "Component/Movement/LttnMovementComponent.h"
 #include "Component/Sound/SoundEventsComponent.h"
 #include "Component/Traversal/TraversalComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/GameplayCameraComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -244,6 +245,11 @@ FPlayerManager ALttnCharacter::GetPlayerManager() const
 	return GameplayComponent->GetPlayerManager();
 }
 
+void ALttnCharacter::SetPlayerInfo(const FPlayerManager& PlayerManager)
+{
+	GameplayComponent->SetPlayerInfo(PlayerManager);
+}
+
 void ALttnCharacter::StartedMoving()
 {
 	GameplayComponent->SetIsMoving(true);
@@ -258,6 +264,30 @@ void ALttnCharacter::PlayerDead()
 {
 	bIsDead = true;
 	GetLttnController()->PlayerDead();
+	SetRagDoll();
+}
+
+void ALttnCharacter::SetRagDoll()
+{
+	UCapsuleComponent* CapsuleComp = GetCapsuleComponent();
+	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	CapsuleComp->SetCollisionResponseToAllChannels(ECR_Ignore);
+
+	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+	SetActorEnableCollision(true);
+
+
+	GetMesh()->SetAllBodiesSimulatePhysics(true);
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->WakeAllRigidBodies();
+	GetMesh()->bBlendPhysics = true;
+
+	if (UCharacterMovementComponent* CharacterComp = Cast<UCharacterMovementComponent>(GetMovementComponent()))
+	{
+		CharacterComp->StopMovementImmediately();
+		CharacterComp->DisableMovement();
+		CharacterComp->SetComponentTickEnabled(false);
+	}
 }
 
 void ALttnCharacter::UpdateWeaponProjectiles(const int32 Count) const

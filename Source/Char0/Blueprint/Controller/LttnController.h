@@ -90,6 +90,7 @@ public:
 	bool HasRagDoll() const;
 	void DestroyRagdoll();
 	void GameOver(bool bIsMulti);
+	FPlayerManager GetPlayerManager() const;
 
 private:
 	void InitialiseHud(const FPlayerManager& PlayerManager);

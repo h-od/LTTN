@@ -184,6 +184,11 @@ void ALttnController::GameOver(const bool bIsMulti)
 	Client_GameOver(bIsMulti);
 }
 
+FPlayerManager ALttnController::GetPlayerManager() const
+{
+	return ActorToDestroyOnRevive->GetPlayerManager();
+}
+
 void ALttnController::InitialiseHud(const FPlayerManager& PlayerManager)
 {
 	Client_InitialiseHud(PlayerManager);

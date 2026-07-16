@@ -55,6 +55,11 @@ void UGameplayComponent::SetNewPlayerInfo()
 	);
 }
 
+void UGameplayComponent::SetPlayerInfo(const FPlayerManager& NewValue)
+{
+	PlayerManager = NewValue;
+}
+
 void UGameplayComponent::LevelStarted()
 {
 	// BotDamage++;
