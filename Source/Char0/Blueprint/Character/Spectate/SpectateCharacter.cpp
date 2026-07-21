@@ -1,7 +1,14 @@
 ﻿#include "SpectateCharacter.h"
 
 #include "EnhancedInputComponent.h"
+#include "Char0/Blueprint/Character/LttnCharacter.h"
 #include "Kismet/GameplayStatics.h"
+
+void ASpectateCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	//TODO widget
+}
 
 void ASpectateCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {

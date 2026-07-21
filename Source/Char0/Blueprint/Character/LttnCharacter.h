@@ -56,6 +56,9 @@ private:
 	//Simulated End
 
 	UPROPERTY(Replicated)
+	int32 Id;
+
+	UPROPERTY(Replicated)
 	float AimStickSens = 50;
 	UPROPERTY(Replicated)
 	float AimMouseSens = 50;
@@ -98,6 +101,8 @@ private:
 	
 	UPROPERTY()
 	EInteractableType Interactable = EInteractableType::NoInteraction;
+	UPROPERTY()
+	int32 PlayerToRevive;
 
 protected:
 	// Config
@@ -177,12 +182,19 @@ public:
 	FPropertiesForCamera GetPropertiesCamera() const;
 
 	//GameplayComponent
+	int32 GetId() const;
 	FPlayerManager GetPlayerManager() const;
 	void SetPlayerInfo(const FPlayerManager& PlayerManager);
 	void StartedMoving();
 	void StoppedMoving();
 	void PlayerDead();
 	void SetRagDoll();
+	UFUNCTION(Server, Reliable)
+	void Server_SetRagDoll();
+	void Server_SetRagDoll_Implementation();
+	UFUNCTION(NetMulticast, Reliable)
+	void MC_SetRagDoll();
+	void MC_SetRagDoll_Implementation();
 	void UpdateWeaponProjectiles(int32 Count) const;
 	UFUNCTION(BlueprintNativeEvent)
 	FVector GetWeaponLocation();
@@ -201,7 +213,27 @@ public:
 	//InteractableActor
 	void CanInteract(EInteractableType Type);
 	void CantInteract();
-
+	
+	void CanRevive(int32 RevivableId);
+	UFUNCTION(Client, Reliable)
+	void Client_CanRevive(int32 RevivableId);
+	void Client_CanRevive_Implementation(int32 RevivableId);
+	
+	void CantRevive();
+	UFUNCTION(Client, Reliable)
+	void Client_CantRevive();
+	void Client_CantRevive_Implementation();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void EnableCollisionSphere(bool bEnabled);
+	
+protected:
+	UFUNCTION(BlueprintCallable)
+	void OverlapStart(AActor* Overlapping);
+	
+	UFUNCTION(BlueprintCallable)
+	void OverlapEnd(AActor* Overlapping);
+	
 private:
 	UFUNCTION(Client, Reliable)
 	void Client_Possessed();

@@ -17,5 +17,7 @@ enum class EInteractableType : uint8
 	UpgradeReloadSpeed UMETA(DisplayName = "UpgradeReloadSpeed"),
 	UpgradeProjectileCapacity UMETA(DisplayName = "UpgradeProjectileCapacity"),
 	
+	Revive UMETA(DisplayName = "Revive"),
+	
 	NoInteraction UMETA(DisplayName = "NoInteraction")
 };

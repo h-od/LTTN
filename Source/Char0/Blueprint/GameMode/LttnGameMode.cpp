@@ -99,6 +99,41 @@ void ALttnGameMode::StartLevel()
 	}
 }
 
+void ALttnGameMode::CheckForDeadPlayers()
+{
+	bool bAnyDead = false;
+	for (const TTuple Alive : PlayersAlive)
+	{
+		if (!Alive.Value)
+		{
+			bAnyDead = true;
+		}
+	}
+	if (bAnyDead)
+	{
+		for (const TTuple Alive : PlayersAlive)
+		{
+			const bool bValue = Alive.Value;
+			UKismetSystemLibrary::PrintString(GetWorld(), "ALttnGameMode::CheckForDeadPlayers " + FString::FromInt(Alive.Key) + ": " + (bValue?" true ":"false"), true, true, FLinearColor::Red, 5.0f);
+			if (bValue)
+			{
+				Players[Alive.Key]->DisableSphere();
+			}
+			else
+			{
+				Players[Alive.Key]->EnableSphere();
+			}
+		}
+	}
+	else
+	{
+		for (const TTuple Alive : PlayersAlive)
+		{
+			Players[Alive.Key]->DisableSphere();
+		}
+	}
+}
+
 void ALttnGameMode::PlayerDead(const int32 PlayerId)
 {
 	UpdateBotSpawnLocation();
@@ -124,6 +159,7 @@ void ALttnGameMode::PlayerDead(const int32 PlayerId)
 				AlivePlayerIds.Add(AlivePlayerId.Key);
 			}
 		}
+		CheckForDeadPlayers();
 		Players[PlayerId]->StartSpectate(AlivePlayerIds.Top());
 	}
 }
@@ -135,17 +171,25 @@ APawn* ALttnGameMode::GetPlayerPawn(const int32 PlayerId)
 
 void ALttnGameMode::RevivePlayer(const int32 RevivingPlayerId, const int32 PlayerToReviveId)
 {
-	for (const auto Player : Players)
-	{
-		if (Player->Id == PlayerToReviveId)
-		{
-			PlayersAlive[PlayerToReviveId] = true;
+	
+	PlayersAlive[PlayerToReviveId] = true;
+	Spawn(Players[PlayerToReviveId], true);
+	State->RevivedPlayer(RevivingPlayerId);
+	
+	// for (const auto Player : Players)
+	// {
+	// 	//TODO need loop?
+	// 	if (Player->Id == PlayerToReviveId)
+	// 	{
+	// 		PlayersAlive[PlayerToReviveId] = true;
+	//
+	// 		Spawn(Player, true);
+	//
+	// 		State->RevivedPlayer(RevivingPlayerId);
+	// 	}
+	// }
 
-			Spawn(Player, true);
-
-			State->RevivedPlayer(RevivingPlayerId);
-		}
-	}
+	CheckForDeadPlayers();
 }
 
 void ALttnGameMode::BeginPlay()
@@ -171,10 +215,10 @@ void ALttnGameMode::OnPostLogin(AController* NewPlayer)
 	LttnController->Id = PlayerId;
 	UpdatePlayerLocation(PlayerId, -2); // (-2 = lobby)
 
-	PlayersAlive.Add(PlayerId, true); 
+	PlayersAlive.Add(PlayerId, true);
 
 
-	FindAndSetSpawnAreas(); 
+	FindAndSetSpawnAreas();
 	Spawn(LttnController, false);
 }
 

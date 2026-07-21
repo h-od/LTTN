@@ -62,6 +62,7 @@ void ALttnCharacter::BeginPlay()
 	Super::BeginPlay();
 	PreTickComponent->OnTick.AddDynamic(this, &ALttnCharacter::PreMovementTick);
 
+	EnableCollisionSphere(false);
 	GetCharacterMovement()->AddTickPrerequisiteComponent(PreTickComponent);
 
 	if (GetLocalRole() == ROLE_SimulatedProxy)
@@ -86,6 +87,7 @@ void ALttnCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 	LttnController = Cast<ALttnController>(NewController);
+	Id = LttnController->Id;
 	Client_Possessed();
 }
 
@@ -163,15 +165,23 @@ void ALttnCharacter::Landed(const FHitResult& Hit)
 
 float ALttnCharacter::TakeDamage(const float Damage, const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	if (DamageCauser->IsA(ABotCharacter::StaticClass()))
+	if (bIsDead)
 	{
-		Client_TakeDamage(Damage, DamageCauser);
+		return Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 	}
+	// if (DamageCauser->IsA(ABotCharacter::StaticClass()))
+	// {
+	Client_TakeDamage(Damage, DamageCauser);
+	// }
 	return Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 }
 
 void ALttnCharacter::Client_TakeDamage_Implementation(const float Damage, AActor* DamageCauser)
 {
+	if (bIsDead)
+	{
+		return;
+	}
 	GameplayComponent->TakeDamage(Damage, DamageCauser->GetActorForwardVector());
 }
 
@@ -240,6 +250,11 @@ FPropertiesForCamera ALttnCharacter::GetPropertiesCamera() const
 	);
 }
 
+int32 ALttnCharacter::GetId() const
+{
+	return Id;
+}
+
 FPlayerManager ALttnCharacter::GetPlayerManager() const
 {
 	return GameplayComponent->GetPlayerManager();
@@ -264,29 +279,62 @@ void ALttnCharacter::PlayerDead()
 {
 	bIsDead = true;
 	GetLttnController()->PlayerDead();
-	SetRagDoll();
 }
 
 void ALttnCharacter::SetRagDoll()
 {
-	UCapsuleComponent* CapsuleComp = GetCapsuleComponent();
-	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	CapsuleComp->SetCollisionResponseToAllChannels(ECR_Ignore);
+	Server_SetRagDoll();
+}
 
-	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
-	SetActorEnableCollision(true);
+void ALttnCharacter::Server_SetRagDoll_Implementation()
+{
+	bIsDead = true;
+	MC_SetRagDoll();
+}
 
-
-	GetMesh()->SetAllBodiesSimulatePhysics(true);
-	GetMesh()->SetSimulatePhysics(true);
-	GetMesh()->WakeAllRigidBodies();
-	GetMesh()->bBlendPhysics = true;
-
+void ALttnCharacter::MC_SetRagDoll_Implementation()
+{
 	if (UCharacterMovementComponent* CharacterComp = Cast<UCharacterMovementComponent>(GetMovementComponent()))
 	{
 		CharacterComp->StopMovementImmediately();
 		CharacterComp->DisableMovement();
 		CharacterComp->SetComponentTickEnabled(false);
+	}
+
+	if (UCapsuleComponent* CapsuleComp = GetCapsuleComponent())
+	{
+		CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		CapsuleComp->SetCollisionResponseToAllChannels(ECR_Ignore);
+	}
+
+	if (USkeletalMeshComponent* MeshComponent = GetMesh())
+	{
+		SetActorEnableCollision(true);
+
+		MeshComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+
+		MeshComponent->SetAllBodiesSimulatePhysics(true);
+		MeshComponent->SetSimulatePhysics(true);
+		MeshComponent->SetCollisionProfileName(TEXT("Ragdoll"));
+		MeshComponent->PhysicsTransformUpdateMode = EPhysicsTransformUpdateMode::ComponentTransformIsKinematic;
+		MeshComponent->WakeAllRigidBodies();
+		MeshComponent->bBlendPhysics = true;
+	}
+}
+
+void ALttnCharacter::OverlapStart(AActor* Overlapping)
+{
+	if (Overlapping and Overlapping->IsA(StaticClass()))
+	{
+		Cast<ALttnCharacter>(Overlapping)->CanRevive(Id);
+	}
+}
+
+void ALttnCharacter::OverlapEnd(AActor* Overlapping)
+{
+	if (Overlapping and Overlapping->IsA(StaticClass()))
+	{
+		Cast<ALttnCharacter>(Overlapping)->CantInteract();
 	}
 }
 
@@ -402,6 +450,10 @@ void ALttnCharacter::CanInteract(const EInteractableType Type)
 		Interactable = Type;
 		C->ShowCanInteract(GameplayComponent->CanUpgradeProjectileCapacity());
 		break;
+	case EInteractableType::Revive:
+		Interactable = Type;
+		C->ShowCanInteract(true);
+		break;
 	case EInteractableType::NoInteraction:
 		Interactable = Type;
 		C->ShowCanInteract(false);
@@ -417,6 +469,28 @@ void ALttnCharacter::CantInteract()
 	}
 	Interactable = EInteractableType::NoInteraction;
 	GetLttnController()->ShowCanInteract(false);
+}
+
+void ALttnCharacter::CanRevive(const int32 RevivableId)
+{
+	Client_CanRevive(RevivableId);
+}
+
+void ALttnCharacter::Client_CanRevive_Implementation(const int32 RevivableId)
+{
+	PlayerToRevive = RevivableId;
+	CanInteract(EInteractableType::Revive);
+}
+
+void ALttnCharacter::CantRevive()
+{
+	Client_CantRevive();
+}
+
+void ALttnCharacter::Client_CantRevive_Implementation()
+{
+	PlayerToRevive = -1;
+	CantInteract();
 }
 
 void ALttnCharacter::Client_Possessed_Implementation()
@@ -608,6 +682,13 @@ void ALttnCharacter::Interact()
 			GameplayComponent->UpgradeProjectileCapacity();
 		}
 		CanInteract(Interactable);
+		break;
+	case EInteractableType::Revive:
+		if (PlayerToRevive > -1)
+		{
+			GetLttnController()->DoRevive(PlayerToRevive);
+		}
+		CanInteract(EInteractableType::NoInteraction);
 		break;
 	case EInteractableType::NoInteraction:
 		break;
@@ -941,7 +1022,10 @@ void ALttnCharacter::DidLand()
 void ALttnCharacter::Client_SetMaxHealth_Implementation()
 {
 	GameplayComponent->SetMaxHealth();
-	GetLttnController()->SetPlayerHealth(1.0f);
+	if (const ALttnController* Con = GetLttnController())
+	{
+		Con->SetPlayerHealth(1.0f);
+	}
 }
 
 ALttnController* ALttnCharacter::GetLttnController()

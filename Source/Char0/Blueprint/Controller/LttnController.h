@@ -92,6 +92,10 @@ public:
 	void GameOver(bool bIsMulti);
 	FPlayerManager GetPlayerManager() const;
 
+	void DoRevive(int32 IdToRevive);
+	void EnableSphere();
+	void DisableSphere();
+
 private:
 	void InitialiseHud(const FPlayerManager& PlayerManager);
 	UFUNCTION(Client, Reliable)
@@ -109,6 +113,10 @@ private:
 	UFUNCTION(Client, Reliable)
 	void Client_CantStartGame();
 	void Client_CantStartGame_Implementation();
+	
+	UFUNCTION(Server, Reliable)
+	void Server_DoRevive(int32 IdToRevive);
+	void Server_DoRevive_Implementation(int32 IdToRevive);
 	
 	UFUNCTION(Client, Reliable)
 	void Client_GameOver(bool bIsMulti);

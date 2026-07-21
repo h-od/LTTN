@@ -151,7 +151,9 @@ void ALttnController::StartSpectate(const int32 SpectateId)
 		return;
 	}
 	bIsSpectating = true;
-	ActorToDestroyOnRevive = Cast<ALttnCharacter>(GetCharacter());
+	ALttnCharacter* Char = Cast<ALttnCharacter>(GetCharacter());
+	Char->SetRagDoll();
+	ActorToDestroyOnRevive = Char;
 	UnPossess();
 	CurrentlySpectating = SpectateId;
 	APawn* CharacterToSpectate = GetLttnGameMode()->GetPlayerPawn(SpectateId);
@@ -189,6 +191,23 @@ FPlayerManager ALttnController::GetPlayerManager() const
 	return ActorToDestroyOnRevive->GetPlayerManager();
 }
 
+void ALttnController::DoRevive(const int32 IdToRevive)
+{
+	Server_DoRevive(IdToRevive);
+}
+
+void ALttnController::EnableSphere()
+{
+	
+	LttnCharacter->EnableCollisionSphere(true);
+}
+
+void ALttnController::DisableSphere()
+{
+	
+	LttnCharacter->EnableCollisionSphere(false);
+}
+
 void ALttnController::InitialiseHud(const FPlayerManager& PlayerManager)
 {
 	Client_InitialiseHud(PlayerManager);
@@ -216,6 +235,11 @@ void ALttnController::Server_StartLevel_Implementation()
 void ALttnController::Client_CantStartGame_Implementation()
 {
 	HUD->ShowCantStartGame();
+}
+
+void ALttnController::Server_DoRevive_Implementation(const int32 IdToRevive)
+{
+	GetLttnGameMode()->RevivePlayer(Id, IdToRevive);
 }
 
 void ALttnController::Client_GameOver_Implementation(const bool bIsMulti)
