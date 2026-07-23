@@ -17,8 +17,6 @@ void UGameplayComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// UKismetSystemLibrary::PrintString(GetWorld(), "UGameplayComponent::BeginPlay \n\t " + PlayerManager.Player.ToString() + " \n\t " + PlayerManager.Weapon.ToString(), true, true, FLinearColor::Red,
-	// 25.0f);
 }
 
 void UGameplayComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -74,7 +72,6 @@ void UGameplayComponent::TakeDamage(const float Damage, const FVector& DamageDir
 {
 	constexpr float Knockback = 500;
 
-	//todo player hit instead, or as well?
 	Cast<ACharacter>(GetOwner())->LaunchCharacter(FVector(DamageDirection.X, DamageDirection.Y, 0.0f) * Knockback, true, false);
 
 	if (const float NewHealth = PlayerManager.UpdatePlayerHealth(-1 * Damage); NewHealth <= 0)
@@ -137,8 +134,6 @@ void UGameplayComponent::SetIsMoving(const bool bMoving)
 void UGameplayComponent::StartSprinting()
 {
 	bIsSprinting = true;
-	// InputState.bWantsToSprint = true;
-	// Server_UpdateInputState(InputState);
 	GetWorld()->GetTimerManager().ClearTimer(StaminaRegenTimerHandle);
 	GetWorld()->GetTimerManager().ClearTimer(StaminaDegenTimerHandle);
 	GetWorld()->GetTimerManager().SetTimer(StaminaDegenTimerHandle, this, &UGameplayComponent::DecrementStamina, 0.1f, true);
@@ -345,8 +340,6 @@ void UGameplayComponent::Fire()
 				Damage *= 2;
 			}
 
-			// Server_DoFire(Bot, Damage); 
-			// TODO is this ok or does it need to be done on server? Or is it automatically replicated. Should bot health be replicated instead?
 			UGameplayStatics::ApplyDamage(Bot, Damage, GetOwner()->GetInstigatorController(), GetOwner(), UDamageType::StaticClass());
 
 			int32 Score = 10;
@@ -368,12 +361,10 @@ void UGameplayComponent::Fire()
 
 	if (!BlockingHits.IsEmpty())
 	{
-		UE_LOG(LogHAL, Log, TEXT("UGameplayComponent::Fire had blocking hit"));
 		DidFire(BlockingHits[0].Location);
 	}
 	else
 	{
-		UE_LOG(LogHAL, Log, TEXT("UGameplayComponent::Fire NO blocking hit"));
 		DidFire(End);
 	}
 }

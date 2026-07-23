@@ -20,7 +20,7 @@ void ALttnHud::Initialise(const FPlayerManager& PlayerManager)
 	OverlayWidget->SetMaxWeaponProjectiles(FText::FromString(std::to_string(PlayerManager.Weapon.MaxProjectiles).c_str()));
 	OverlayWidget->SetPlayerHealth(1);
 	OverlayWidget->SetPlayerStamina(1);
-	OverlayWidget->SetScore(FText::FromString(std::to_string(PlayerManager.CurrentScore).c_str())); //todo hard code 0
+	OverlayWidget->SetScore(FText::FromString(std::to_string(PlayerManager.CurrentScore).c_str()));
 	OverlayWidget->SetPlayerProjectiles(FText::FromString(std::to_string(PlayerManager.Player.Projectiles).c_str()));
 	OverlayWidget->SetMaxPlayerProjectiles(FText::FromString(std::to_string(PlayerManager.Player.MaxProjectiles).c_str()));
 	OverlayWidget->AddToViewport();

@@ -157,8 +157,6 @@ void ALttnController::StartSpectate(const int32 SpectateId)
 	UnPossess();
 	CurrentlySpectating = SpectateId;
 	APawn* CharacterToSpectate = GetLttnGameMode()->GetPlayerPawn(SpectateId);
-
-	UE_LOG(LogTemp, Warning, TEXT("ACombatPlayerController::AttachSpectatorToSpectateId %s"), *CharacterToSpectate->GetName());
 	
 	FActorSpawnParameters SpawnParams = FActorSpawnParameters();
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::DontSpawnIfColliding;
@@ -244,14 +242,11 @@ void ALttnController::Server_DoRevive_Implementation(const int32 IdToRevive)
 
 void ALttnController::Client_GameOver_Implementation(const bool bIsMulti)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Client_GameOver_Implementation HasAuthority: %s, IsLocalPlayerController: %s"), HasAuthority()?TEXT("true"):TEXT("false"),
-		   IsLocalPlayerController()?TEXT("true"):TEXT("false"));
 	SetInputMode(FInputModeUIOnly());
 	SetShowMouseCursor(true);
 	UGameplayStatics::SetGamePaused(GetWorld(), true);
 
 	UGameSummaryWidget* SummaryWidget = Cast<UGameSummaryWidget>(CreateWidget(GetWorld(), SummaryWidgetClass));
-	// FString String = GameState->GetSummary().ToString(); TODO
 
 	SummaryWidget->AddToViewport();
 	SummaryWidget->ShowSummary(

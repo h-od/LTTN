@@ -128,8 +128,6 @@ void ALttnGameState::DecrementBot(const int32 PlayerId)
 	default:
 		UE_LOG(LogHAL, Log, TEXT("DecrementBot not found? %d"), PlayerId);
 	}
-	// ArenaInfo->BotDestroyed(PlayerId);
-	// OnArenaInfoUpdated();
 }
 
 FString ALttnGameState::GetSummary(const int32 PlayerId, const bool bIsMulti) const

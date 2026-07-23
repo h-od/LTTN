@@ -202,17 +202,6 @@ int32 FPlayerManager::UpgradeWeapon()
 
 	WeaponLevel++;
 	return Cost;
-	// //Range
-	// GameplayManager->Gameplay.Weapon.Range *= 1.5;
-	// //Damage
-	// GameplayManager->Gameplay.Weapon.Damage++;
-	// //fire rate
-	// GameplayManager->Gameplay.Weapon.FireRate++;
-	// //proj cap
-	// GameplayManager->Gameplay.Weapon.MaxProjectiles += 5;
-	// Overlay->SetMaxProjectiles(GameplayManager->Gameplay.Weapon.MaxProjectiles);
-	// //pen
-	// GameplayManager->Gameplay.Weapon.Penetration++;
 }
 
 int32 FPlayerManager::UpgradeProjectileCapacity()

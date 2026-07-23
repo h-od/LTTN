@@ -142,7 +142,6 @@ void UBotManager::Spawn()
 		}
 		else
 		{
-			UE_LOG(LogHAL, Log, TEXT("UBotManager::Spawn failed to spawn: %d"), Subject.Index);
 			bSuccess = false;
 		}
 	}

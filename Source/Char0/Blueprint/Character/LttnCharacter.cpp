@@ -54,7 +54,6 @@ ALttnCharacter::ALttnCharacter(const FObjectInitializer& ObjectInitializer) : Su
 	PreTickComponent = CreateDefaultSubobject<UPreTickComponent>(TEXT("PreTickComponent"));
 	TraversalComponent = CreateDefaultSubobject<UTraversalComponent>(TEXT("TraversalComponent"));
 	SoundComponent = CreateDefaultSubobject<USoundEventsComponent>(TEXT("SoundComponent"));
-	// MovementComponent = Cast<ULttnMovementComponent>(GetCharacterMovement());//CreateDefaultSubobject<ULttnMovementComponent>("MovementComponent");
 }
 
 void ALttnCharacter::BeginPlay()
@@ -169,10 +168,10 @@ float ALttnCharacter::TakeDamage(const float Damage, const FDamageEvent& DamageE
 	{
 		return Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 	}
-	// if (DamageCauser->IsA(ABotCharacter::StaticClass()))
-	// {
-	Client_TakeDamage(Damage, DamageCauser);
-	// }
+	if (DamageCauser->IsA(ABotCharacter::StaticClass()))
+	{
+		Client_TakeDamage(Damage, DamageCauser);
+	}
 	return Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 }
 
@@ -513,8 +512,6 @@ void ALttnCharacter::MoveTriggered(const FInputActionValue& InputActionValue)
 	const FVector2D Input = InputActionValue.Get<FVector2D>();
 	const FVector2D ScaleValue = UKismetMathLibrary::Normal2D(Input);
 
-	// UKismetSystemLibrary::PrintString(GetWorld(), "ALttnCharacter::Look_GamepadTriggered X: " + FString::SanitizeFloat(ScaleValue.X) + ", Y: " + FString::SanitizeFloat(ScaleValue.X), true, true, FLinearColor::Red, 5.0f);
-
 	AddMovementInput(RightVector, ScaleValue.X, false);
 	AddMovementInput(ForwardVector, ScaleValue.Y, false);
 }
@@ -540,11 +537,6 @@ void ALttnCharacter::Look_MouseTriggered(const FInputActionValue& InputActionVal
 	{
 		AddControllerYawInput(Yaw);
 		AddControllerPitchInput(Pitch);
-		// if (this->GetName().EndsWith("_0"))
-		// {
-		// 	UKismetSystemLibrary::PrintString(GetWorld(), "ALttnCharacter::Look_MouseTriggered " + FString::SanitizeFloat(Pitch) + "," + FString::SanitizeFloat(Yaw), true, true, FLinearColor::Red,
-		// 	                                  5.0f);
-		// }
 	}
 	else
 	{
@@ -773,8 +765,6 @@ void ALttnCharacter::UpdateRotation_PreTick() const
 	UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
 	MovementComponent->bUseControllerDesiredRotation = InputState.bWantsToAim;
 	MovementComponent->bOrientRotationToMovement = !InputState.bWantsToAim;
-
-	// MovementComponent->RotationRate = FRotator(0.0f, /*MovementComponent->IsFalling() ? 200.0f :*/ -1.0f, 0.0f);
 }
 
 void ALttnCharacter::UpdateMovement_PreTick()

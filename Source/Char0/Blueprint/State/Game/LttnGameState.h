@@ -46,7 +46,6 @@ public:
 	void OnPlayerTwoUpdated();
 	void OnPlayerThreeUpdated();
 	
-	// void PlayerJoined(int32 Id);
 	void RevivedPlayer(int32 PlayerId);
 	void PlayerDowned(int32 PlayerId);
 

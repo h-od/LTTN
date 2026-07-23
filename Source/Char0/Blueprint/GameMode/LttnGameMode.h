@@ -95,10 +95,6 @@ private:
 	void Server_UpdateBotSpawnLocation();
 	void Server_UpdateBotSpawnLocation_Implementation();
 
-	// UFUNCTION(Server, Reliable)
-	// void Server_PlayerDead(int32 PlayerId);
-	// void Server_PlayerDead_Implementation(int32 PlayerId);
-
 	bool AllDead();
 	void OpenDoor(int32 DoorToOpen);
 	UFUNCTION()

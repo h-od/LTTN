@@ -145,7 +145,7 @@ void ABotCharacter::AttackFinished()
 
 	if (AttackHitRight.GetActor() != nullptr and AttackHitRight.GetActor()->IsA(ALttnCharacter::StaticClass()))
 	{
-		UGameplayStatics::ApplyPointDamage(AttackHitRight.GetActor(), 1.0F/*HitDamage*/, AttackHitRight.ImpactPoint, AttackHitRight, GetController(), this, nullptr);
+		UGameplayStatics::ApplyPointDamage(AttackHitRight.GetActor(), HitDamage, AttackHitRight.ImpactPoint, AttackHitRight, GetController(), this, nullptr);
 	}
 
 	if (AttackHitLeft.GetActor() != nullptr and AttackHitLeft.GetActor()->IsA(ALttnCharacter::StaticClass()))
@@ -227,8 +227,7 @@ void ABotCharacter::SetEnabled(const bool bEnabled)
 		ABotAiController* BotAiController = GetAiController();
 		Capsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		// GetCharacterMovement()->DisableMovement();//TODO this or just stop
-		// GetMesh()->SetSimulatePhysics(true);
+	
 		BotAiController->BrainComponent->StopLogic("Bot is dead");
 		if (bIsPossessed)
 		{

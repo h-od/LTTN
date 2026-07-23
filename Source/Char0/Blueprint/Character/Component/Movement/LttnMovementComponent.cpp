@@ -6,7 +6,7 @@ ULttnMovementComponent::ULttnMovementComponent()
 	GravityScale = 1.0f;
 	MaxAcceleration = 500.0f;
 	BrakingFrictionFactor = 0.0f;
-	CrouchedHalfHeight = 60.0f; //todo deprecated -> needed?
+	 CrouchedHalfHeight = 60.0f; //todo deprecated -> needed?
 	bUseSeparateBrakingFriction = false;
 	Mass = 100.0f;
 	DefaultLandMovementMode = MOVE_Walking;

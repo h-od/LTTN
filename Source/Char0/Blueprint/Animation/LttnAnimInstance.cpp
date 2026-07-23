@@ -293,7 +293,7 @@ void ULttnAnimInstance::UpdateTrajectory()
 	FTransformTrajectory TempTrajectory;
 
 	UPoseSearchTrajectoryLibrary::PoseSearchGenerateTransformTrajectory(
-		GetProperty_AnimInstance(), //todo pass in character?
+		GetProperty_AnimInstance(),
 		Speed2D > 0.0f ? TrajectoryGenerationData_Moving : TrajectoryGenerationData_Idle,
 		GetProperty_DeltaSecs(),
 		Trajectory,

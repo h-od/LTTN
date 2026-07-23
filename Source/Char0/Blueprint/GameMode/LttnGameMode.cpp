@@ -83,7 +83,6 @@ void ALttnGameMode::StartGame()
 
 void ALttnGameMode::StartLevel()
 {
-	UKismetSystemLibrary::PrintString(GetWorld(), "ALttnGameMode::StartLevel: " + FString::FromInt(GameplayManager.Level.Level), true, true, FLinearColor::Red, 25.0f);
 	if (GameplayManager.IsLevelComplete())
 	{
 		State->bCanStartNewLevel = false;
@@ -113,9 +112,7 @@ void ALttnGameMode::CheckForDeadPlayers()
 	{
 		for (const TTuple Alive : PlayersAlive)
 		{
-			const bool bValue = Alive.Value;
-			UKismetSystemLibrary::PrintString(GetWorld(), "ALttnGameMode::CheckForDeadPlayers " + FString::FromInt(Alive.Key) + ": " + (bValue?" true ":"false"), true, true, FLinearColor::Red, 5.0f);
-			if (bValue)
+			if (Alive.Value)
 			{
 				Players[Alive.Key]->DisableSphere();
 			}
@@ -175,19 +172,6 @@ void ALttnGameMode::RevivePlayer(const int32 RevivingPlayerId, const int32 Playe
 	PlayersAlive[PlayerToReviveId] = true;
 	Spawn(Players[PlayerToReviveId], true);
 	State->RevivedPlayer(RevivingPlayerId);
-	
-	// for (const auto Player : Players)
-	// {
-	// 	//TODO need loop?
-	// 	if (Player->Id == PlayerToReviveId)
-	// 	{
-	// 		PlayersAlive[PlayerToReviveId] = true;
-	//
-	// 		Spawn(Player, true);
-	//
-	// 		State->RevivedPlayer(RevivingPlayerId);
-	// 	}
-	// }
 
 	CheckForDeadPlayers();
 }
@@ -287,7 +271,6 @@ void ALttnGameMode::FindAndSetSpawnAreas()
 void ALttnGameMode::StartWave()
 {
 	const FWaveInfo Wave = GameplayManager.StartWave();
-	UKismetSystemLibrary::PrintString(GetWorld(), "ALttnGameMode::StartWave Starting Wave: " + FString::FromInt(Wave.Index), true, true, FLinearColor::Red, 5.0f);
 	OpenDoor(Wave.Index + 1);
 	BotManager->ActivateBotsForWave(CurrentLevel, Wave);
 }

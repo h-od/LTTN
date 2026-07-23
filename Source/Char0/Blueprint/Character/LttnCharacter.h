@@ -3,7 +3,6 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "InputActionValue.h"
-#include "Char0/Blueprint/Actor/Interactable/Interactable.h"
 #include "Char0/Blueprint/Data/Interaction/InteractableType.h"
 #include "Char0/Blueprint/Data/Movement/PlayerInputState.h"
 #include "Char0/Blueprint/Data/Player/PlayerManager.h"

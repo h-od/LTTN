@@ -49,7 +49,7 @@ bool UTraversalComponent::TryTraversal(const FTraversalCheckInputs& Inputs)
 		return true;
 	}
 	FindBackFloorAndSetDepth();
-	//TODO should multicast HERE, server doesn't seem to know where chlients hand should be
+	//TODO should multicast HERE, server doesn't seem to know where clients hand should be
 	SendFrontLedgeLocationToAnim();
 
 	// TODO should probably multicast here rather than sending Montage over network?
@@ -370,7 +370,6 @@ void UTraversalComponent::Server_PerformTraversal_Implementation(const FTraversa
 
 void UTraversalComponent::FinishTraversalAction()
 {
-	//UKismetSystemLibrary::PrintString(GetWorld(), "UTraversalComponent::FinishTraversalAction ", true, true, FLinearColor::Red, 5.0f);
 	SetReplicationBehavior(false);
 	// bRetriggerTimerActive = false;
 }
@@ -378,8 +377,6 @@ void UTraversalComponent::FinishTraversalAction()
 void UTraversalComponent::Multicast_PerformTraversal_Implementation(const FTraversalCheckResult& Result)
 {
 	CheckResult = Result;
-	// UKismetSystemLibrary::PrintString(GetWorld(), "UTraversalComponent::Multicast_PerformTraversal_Implementation \n" + CheckResult.ToString(), true, true, FLinearColor::Red, 25.0f);
-	// UKismetSystemLibrary::PrintString(GetWorld(), "UTraversalComponent::Multicast_PerformTraversal_Implementation \n" + CheckResult.ToString(), true, true, FLinearColor::Red, 25.0f);
 	PlayMontage(Properties.Mesh, CheckResult.ChosenMontage, CheckResult.PlayRate, CheckResult.StartTime);
 	bDoingAction = true;
 	SetWarpTargets();

@@ -111,7 +111,7 @@ public:
 	void StopFiring();
 	void Reload();
 	void SetIsMoving(bool bMoving);
-	void StartSprinting();//todo need a Delegate to broadcast when stamin runs out
+	void StartSprinting();
 	UFUNCTION()
 	void StopSprinting();
 	
@@ -129,7 +129,7 @@ public:
 	void UpgradeProjectileCapacity();
 	
 	//resupply
-	bool CanResupply() const; //todo returns cooldown 
+	bool CanResupply() const; 
 	void Resupply();
 
 private:

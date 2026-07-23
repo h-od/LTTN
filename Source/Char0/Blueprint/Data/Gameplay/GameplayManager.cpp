@@ -42,5 +42,5 @@ TArray<FLevelInfo> FGameplayManager::GetAllLevels()
 
 FString FGameplayManager::ToString() 
 {
-	return Level.ToString(); //todo player summary
+	return Level.ToString(); 
 }
