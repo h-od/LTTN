@@ -1,13 +1,14 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "Char0/Blueprint/Actor/Interactable/Interactable.h"
 #include "GameFramework/Actor.h"
 #include "Door.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDoorCloseCompleteDelegate);
 
 UCLASS()
-class CHAR0_API ADoor : public AActor
+class CHAR0_API ADoor : public AInteractable
 {
 	GENERATED_BODY()
 

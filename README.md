@@ -1,4 +1,4 @@
-LTTN - A game consisting of endless waves of enemies and then you die.
+ LTTN - A game consisting of endless waves of enemies and then you die.
 
 (kinda like CoD zombies (but not all story oriented))
 
