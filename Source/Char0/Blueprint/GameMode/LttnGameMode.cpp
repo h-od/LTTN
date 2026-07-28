@@ -76,9 +76,6 @@ void ALttnGameMode::StartGame()
 			return;
 		}
 	}
-	ADoor* ExtDoor = Doors[-1];
-	ExtDoor->OnDoorCloseCompleteDelegate.AddDynamic(this, &ALttnGameMode::ExtDoorClosed);
-	ExtDoor->CloseDoor();
 }
 
 void ALttnGameMode::StartLevel()
@@ -184,7 +181,6 @@ void ALttnGameMode::BeginPlay()
 
 	GameplayManager = FGameplayManager();
 
-	FindAndSetDoors();
 	FindAndSetSpawnAreas();
 }
 
@@ -204,21 +200,6 @@ void ALttnGameMode::OnPostLogin(AController* NewPlayer)
 
 	FindAndSetSpawnAreas();
 	Spawn(LttnController, false);
-}
-
-void ALttnGameMode::FindAndSetDoors()
-{
-	TArray<AActor*> FoundDoorActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADoor::StaticClass(), FoundDoorActors);
-	for (AActor* Actor : FoundDoorActors)
-	{
-		if (Actor->IsA(ADoor::StaticClass()))
-		{
-			ADoor* Door = Cast<ADoor>(Actor);
-			int32 InKey = Door->DoorNumber;
-			Doors.Add(InKey, Door);
-		}
-	}
 }
 
 void ALttnGameMode::FindAndSetSpawnAreas()
@@ -271,7 +252,6 @@ void ALttnGameMode::FindAndSetSpawnAreas()
 void ALttnGameMode::StartWave()
 {
 	const FWaveInfo Wave = GameplayManager.StartWave();
-	OpenDoor(Wave.Index + 1);
 	BotManager->ActivateBotsForWave(CurrentLevel, Wave);
 }
 
@@ -303,16 +283,4 @@ bool ALttnGameMode::AllDead()
 		}
 	}
 	return true;
-}
-
-void ALttnGameMode::OpenDoor(const int32 DoorToOpen)
-{
-	Doors[DoorToOpen]->OpenDoor();
-}
-
-void ALttnGameMode::ExtDoorClosed()
-{
-	OpenDoor(0);
-	State->bGameStarted = true;
-	Doors[-1]->OnDoorCloseCompleteDelegate.RemoveDynamic(this, &ALttnGameMode::ExtDoorClosed);
 }

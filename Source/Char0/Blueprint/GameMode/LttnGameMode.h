@@ -35,9 +35,6 @@ class CHAR0_API ALttnGameMode : public AGameMode
 	int32 CurrentLevel = 0;
 
 	UPROPERTY()
-	TMap<int32, ADoor*> Doors;
-
-	UPROPERTY()
 	TMap<int32, int32> PlayersLocation;
 
 	UPROPERTY()
@@ -86,7 +83,6 @@ protected:
 	virtual void OnPostLogin(AController* NewPlayer) override;
 
 private:
-	void FindAndSetDoors();
 	void FindAndSetSpawnAreas();
 
 	void StartWave();
@@ -96,7 +92,4 @@ private:
 	void Server_UpdateBotSpawnLocation_Implementation();
 
 	bool AllDead();
-	void OpenDoor(int32 DoorToOpen);
-	UFUNCTION()
-	void ExtDoorClosed();
 };
