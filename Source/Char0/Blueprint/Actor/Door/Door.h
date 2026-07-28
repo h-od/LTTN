@@ -8,7 +8,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDoorCloseCompleteDelegate);
 
 UCLASS()
-class CHAR0_API ADoor : public AInteractable
+class CHAR0_API ADoor : public AActor
 {
 	GENERATED_BODY()
 
@@ -20,11 +20,17 @@ public:
 	
 	UPROPERTY(EditInstanceOnly)
 	int32 DoorNumber;
+	UPROPERTY(EditInstanceOnly)
+	int32 DoorLevel;
 	
 	void CloseDoor();
 	void OpenDoor();
 
 protected:
+	
+protected:
+	UFUNCTION(BlueprintCallable)
+	void NotifyActor(AActor* Actor, const bool bNotifyCan) const;
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void Open();
@@ -36,6 +42,8 @@ protected:
 	void OnDoorCloseComplete() const;
 	
 private:
+	void Notify(ALttnCharacter* Character, const bool bNotifyCan) const;
+	
 	UFUNCTION(NetMulticast, Reliable)
 	void MC_CloseDoor();
 	void MC_CloseDoor_Implementation();

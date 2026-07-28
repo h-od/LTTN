@@ -173,6 +173,11 @@ void ALttnGameMode::RevivePlayer(const int32 RevivingPlayerId, const int32 Playe
 	CheckForDeadPlayers();
 }
 
+void ALttnGameMode::OpenDoor(const int32 DoorNumber)
+{
+	Doors[DoorNumber]->OpenDoor();
+}
+
 void ALttnGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -181,6 +186,7 @@ void ALttnGameMode::BeginPlay()
 
 	GameplayManager = FGameplayManager();
 
+	FindAndSetDoors();
 	FindAndSetSpawnAreas();
 }
 
@@ -200,6 +206,21 @@ void ALttnGameMode::OnPostLogin(AController* NewPlayer)
 
 	FindAndSetSpawnAreas();
 	Spawn(LttnController, false);
+}
+
+void ALttnGameMode::FindAndSetDoors()
+{
+	TArray<AActor*> FoundDoorActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADoor::StaticClass(), FoundDoorActors);
+	for (AActor* Actor : FoundDoorActors)
+	{
+		if (Actor->IsA(ADoor::StaticClass()))
+		{
+			ADoor* Door = Cast<ADoor>(Actor);
+			int32 InKey = Door->DoorNumber;
+			Doors.Add(InKey, Door);
+		}
+	}
 }
 
 void ALttnGameMode::FindAndSetSpawnAreas()

@@ -95,6 +95,11 @@ public:
 	void DoRevive(int32 IdToRevive);
 	void EnableSphere();
 	void DisableSphere();
+	void OpenDoor(int32 DoorNumber);
+	
+	UFUNCTION(Server, Reliable)
+	void Server_OpenDoor(int32 DoorNumber);
+	void Server_OpenDoor_Implementation(int32 DoorNumber);
 
 private:
 	void InitialiseHud(const FPlayerManager& PlayerManager);

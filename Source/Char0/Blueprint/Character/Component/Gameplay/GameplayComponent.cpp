@@ -16,7 +16,6 @@ UGameplayComponent::UGameplayComponent()
 void UGameplayComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 void UGameplayComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -237,6 +236,16 @@ void UGameplayComponent::Resupply()
 	{
 		GetCharacter()->ShowResupplyCooldown(TimerRemaining);
 	}
+}
+
+bool UGameplayComponent::CanOpenDoor(const int32 DoorLevel) const
+{
+	return PlayerManager.CanOpenDoor(DoorLevel);
+}
+
+void UGameplayComponent::OpenedDoor(const int32 DoorLevel)
+{
+	GetCharacter()->ShowScore(PlayerManager.CurrentScore, PlayerManager.OpenedDoor(DoorLevel));
 }
 
 ALttnCharacter* UGameplayComponent::GetCharacter()

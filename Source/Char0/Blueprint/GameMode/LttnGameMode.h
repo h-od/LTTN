@@ -42,6 +42,9 @@ class CHAR0_API ALttnGameMode : public AGameMode
 
 	UPROPERTY()
 	TArray<ALttnController*> Players;
+
+	UPROPERTY()
+	TMap<int32, ADoor*> Doors;
 	
 	UPROPERTY()
 	TArray<ASpawnArea*> PlayerSpawn;//TODO TArray<FVector>
@@ -76,11 +79,14 @@ public:
 	APawn* GetPlayerPawn(int32 PlayerId);
 
 	void RevivePlayer(int32 RevivingPlayerId, int32 PlayerToReviveId);
+	
+	void OpenDoor(int32 DoorNumber);
 
 protected:
 	virtual void BeginPlay() override;
 
 	virtual void OnPostLogin(AController* NewPlayer) override;
+	void FindAndSetDoors();
 
 private:
 	void FindAndSetSpawnAreas();

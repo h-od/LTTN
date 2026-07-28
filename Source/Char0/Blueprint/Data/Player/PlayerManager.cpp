@@ -276,19 +276,31 @@ void FPlayerManager::SetPlayerHealthMax()
 float FPlayerManager::UpdatePlayerHealth(const int32 Delta)
 {
 	Player.Health += Delta;
-	return Player.Health/ Player.MaxHealth;
+	return Player.Health / Player.MaxHealth;
 }
 
 float FPlayerManager::IncrementPlayerHealth()
 {
 	Player.Health += 1;
-	return Player.Health/ Player.MaxHealth;
+	return Player.Health / Player.MaxHealth;
 }
 
 int32 FPlayerManager::AddScore(const int32 Delta)
 {
 	TotalScore += Delta;
 	return CurrentScore += Delta;
+}
+
+bool FPlayerManager::CanOpenDoor(const int32 DoorLevel) const
+{
+	return CurrentScore >= GetCostForDoorLevel(DoorLevel);
+}
+
+int32 FPlayerManager::OpenedDoor(const int32 DoorLevel)
+{
+	const int32 Cost = GetCostForDoorLevel(DoorLevel);
+	CurrentScore -= Cost;
+	return Cost;
 }
 
 int32 FPlayerManager::GetCostForLevel(const int32 Level) const
@@ -333,4 +345,20 @@ int32 FPlayerManager::UpgradeWeaponCost() const
 int32 FPlayerManager::UpgradeProjectileCapacityCost() const
 {
 	return GetCostForLevel(ProjectileCapacityLevel + 1);
+}
+
+int32 FPlayerManager::GetCostForDoorLevel(const int32 DoorLevel)
+{
+	switch (DoorLevel)
+	{
+	case 0:
+		return 250;
+	case 1:
+		return 500;
+	case 2:
+		return 1000;
+	case 3:
+		return 1500; //todo 2000?
+	default: return -1; //TODO?
+	}
 }

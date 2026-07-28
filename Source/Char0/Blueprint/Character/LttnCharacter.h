@@ -99,6 +99,11 @@ private:
 	bool bIsRagdolling;
 	
 	UPROPERTY()
+	int32 DoorToOpen;
+	UPROPERTY()
+	int32 DoorToOpenLevel;
+	
+	UPROPERTY()
 	EInteractableType Interactable = EInteractableType::NoInteraction;
 	UPROPERTY()
 	int32 PlayerToRevive;
@@ -213,6 +218,8 @@ public:
 	void CanInteract(EInteractableType Type);
 	void CantInteract();
 	
+	void CanOpenDoor(int32 DoorNumber, int32 DoorLevel);
+	
 	void CanRevive(int32 RevivableId);
 	UFUNCTION(Client, Reliable)
 	void Client_CanRevive(int32 RevivableId);
@@ -225,7 +232,7 @@ public:
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void EnableCollisionSphere(bool bEnabled);
-	
+
 protected:
 	UFUNCTION(BlueprintCallable)
 	void OverlapStart(AActor* Overlapping);

@@ -111,6 +111,10 @@ void ALttnController::ShowPlayerProjectiles(const int32 Projectiles) const
 
 void ALttnController::ShowCanInteract(const bool bShow) const
 {
+	if (!IsLocalController())
+	{
+		return;
+	}
 	HUD->ShowInteract(bShow);
 }
 
@@ -204,6 +208,16 @@ void ALttnController::DisableSphere()
 {
 	
 	LttnCharacter->EnableCollisionSphere(false);
+}
+
+void ALttnController::OpenDoor(const int32 DoorNumber)
+{
+	Server_OpenDoor(DoorNumber);
+}
+
+void ALttnController::Server_OpenDoor_Implementation(int32 DoorNumber)
+{
+	GetLttnGameMode()->OpenDoor(DoorNumber);
 }
 
 void ALttnController::InitialiseHud(const FPlayerManager& PlayerManager)

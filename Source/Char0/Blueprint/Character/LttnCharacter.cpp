@@ -453,6 +453,8 @@ void ALttnCharacter::CanInteract(const EInteractableType Type)
 		Interactable = Type;
 		C->ShowCanInteract(true);
 		break;
+	case EInteractableType::Door: //todo handled differently
+		break;
 	case EInteractableType::NoInteraction:
 		Interactable = Type;
 		C->ShowCanInteract(false);
@@ -468,6 +470,20 @@ void ALttnCharacter::CantInteract()
 	}
 	Interactable = EInteractableType::NoInteraction;
 	GetLttnController()->ShowCanInteract(false);
+}
+
+void ALttnCharacter::CanOpenDoor(const int32 DoorNumber, const int32 DoorLevel)
+{
+	if (GameplayComponent->CanOpenDoor(DoorLevel))
+	{
+		DoorToOpen = DoorNumber;
+		DoorToOpenLevel = DoorLevel;
+		Interactable = EInteractableType::Door;
+		if (const ALttnController* C = GetLttnController())
+		{
+			C->ShowCanInteract(true); //todo show price too
+		}
+	}
 }
 
 void ALttnCharacter::CanRevive(const int32 RevivableId)
@@ -683,6 +699,14 @@ void ALttnCharacter::Interact()
 		CanInteract(EInteractableType::NoInteraction);
 		break;
 	case EInteractableType::NoInteraction:
+		break;
+	case EInteractableType::Door:
+		if (GameplayComponent->CanOpenDoor(DoorToOpen))
+		{
+			GameplayComponent->OpenedDoor(DoorToOpenLevel);
+			GetLttnController()->OpenDoor(DoorToOpen);
+		}
+		CantInteract();
 		break;
 	}
 }

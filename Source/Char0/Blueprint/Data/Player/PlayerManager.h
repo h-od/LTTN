@@ -85,6 +85,8 @@ public:
 	float UpdatePlayerHealth(int32 Delta);
 	float IncrementPlayerHealth();
 	int32 AddScore(int32 Delta);
+	bool CanOpenDoor(int32 DoorLevel) const;
+	int32 OpenedDoor(int32 DoorLevel);
 
 private:
 	int32 GetCostForLevel(int32 Level) const;
@@ -93,4 +95,5 @@ private:
 	int32 UpgradeReloadSpeedCost() const;
 	int32 UpgradeWeaponCost() const;
 	int32 UpgradeProjectileCapacityCost() const;
+	static int32 GetCostForDoorLevel(int32 DoorLevel);
 };

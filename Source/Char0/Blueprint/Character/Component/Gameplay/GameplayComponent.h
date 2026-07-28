@@ -131,6 +131,8 @@ public:
 	//resupply
 	bool CanResupply() const; 
 	void Resupply();
+	bool CanOpenDoor(int32 DoorLevel) const;
+	void OpenedDoor(int32 DoorLevel);
 
 private:
 	ALttnCharacter* GetCharacter();
