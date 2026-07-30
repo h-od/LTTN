@@ -48,9 +48,14 @@ void ALttnController::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>
 	DOREPLIFETIME(ALttnController, Id);
 }
 
-void ALttnController::CantStartGame()
+void ALttnController::ShowStartGame()
 {
-	Client_CantStartGame();
+	Client_ShowStartGame();
+}
+
+void ALttnController::SetWave(const int32 Wave)
+{
+	Client_SetWave(Wave);
 }
 
 void ALttnController::UpdateWeaponProjectiles(const int32 Count) const
@@ -244,9 +249,14 @@ void ALttnController::Server_StartLevel_Implementation()
 	GetLttnGameMode()->StartLevel();
 }
 
-void ALttnController::Client_CantStartGame_Implementation()
+void ALttnController::Client_ShowStartGame_Implementation()
 {
-	HUD->ShowCantStartGame();
+	// HUD->ShowGameStart();
+}
+
+void ALttnController::Client_SetWave_Implementation(const int32 Wave)
+{
+	HUD->SetWave(Wave);
 }
 
 void ALttnController::Server_DoRevive_Implementation(const int32 IdToRevive)

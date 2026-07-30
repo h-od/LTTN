@@ -51,8 +51,6 @@ class CHAR0_API ALttnGameMode : public AGameMode
 	
 	UPROPERTY()
 	TArray<ASpawnArea*> PlayerReSpawn; //TODO TArray<FVector>
-	UPROPERTY()
-	FVector StartSpawnLocation;
 
 protected:
 	UPROPERTY(EditDefaultsOnly)

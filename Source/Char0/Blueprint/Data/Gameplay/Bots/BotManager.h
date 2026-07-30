@@ -1,9 +1,11 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "Char0/Blueprint/Data/Gameplay/Spawns/BotSpawns.h"
 #include "UObject/Object.h"
 #include "BotManager.generated.h"
 
+// struct FBotSpawns;
 class ASpawnArea;
 struct FSpawn;
 struct FWaveInfo;
@@ -65,7 +67,7 @@ class CHAR0_API UBotManager : public UObject
 	UPROPERTY()
 	int SpawnIndex = -1;
 
-	TMap<int32, TPair<ASpawnArea*, ASpawnArea*>> Spawns;
+	TMap<int32, FBotSpawns> Spawns;
 
 	UPROPERTY()
 	TArray<FSpawn> ToSpawn;
@@ -77,7 +79,7 @@ public:
 	virtual UWorld* GetWorld() const override;
 
 	void SetBotClass(TSubclassOf<ABotCharacter> Class);
-	void SetSpawnAreas(const TMap<int32, TTuple<ASpawnArea*, ASpawnArea*>>& SpawnAreas);
+	void SetSpawnAreas(const TMap<int32, FBotSpawns>& SpawnAreas);
 	void UpdateBotSpawnLocation(int ClosestToHead);
 	
 	UFUNCTION()
@@ -86,7 +88,6 @@ public:
 private:
 	void StartSpawnBots();
 	static int32 GetSpawnAmount(int32 WaveIndex);
-	ASpawnArea* GetSpawnArea(int Index);
 
 	UFUNCTION()
 	void Spawn();

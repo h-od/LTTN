@@ -421,10 +421,10 @@ void ALttnCharacter::CanInteract(const EInteractableType Type)
 		Interactable = Type;
 		C->ShowCanInteract(C->CanStartGame());
 		break;
-	case EInteractableType::StartLevel:
-		Interactable = Type;
-		C->ShowCanInteract(C->CanStartLevel());
-		break;
+	// case EInteractableType::StartLevel:
+		// Interactable = Type;
+		// C->ShowCanInteract(C->CanStartLevel());
+		// break;
 	case EInteractableType::Resupply:
 		Interactable = Type;
 		C->ShowCanInteract(GameplayComponent->CanResupply());
@@ -646,9 +646,6 @@ void ALttnCharacter::Interact()
 	{
 	case EInteractableType::StartGame:
 		GetLttnController()->StartGame();
-		CanInteract(Interactable);
-		break;
-	case EInteractableType::StartLevel:
 		GetLttnController()->StartLevel();
 		CanInteract(Interactable);
 		break;

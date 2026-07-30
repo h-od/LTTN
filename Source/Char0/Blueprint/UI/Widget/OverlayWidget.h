@@ -41,5 +41,5 @@ public:
 	void ShowInteract(const bool bShow);
 	
 	UFUNCTION(BlueprintImplementableEvent)
-	void ShowCantStartGame();
+	void SetWave(const FText& Wave);
 };

@@ -8,7 +8,6 @@ UENUM(BlueprintType, Category = "Enum of all interactions")
 enum class EInteractableType : uint8
 {
 	StartGame UMETA(DisplayName = "StartGame"),
-	StartLevel UMETA(DisplayName = "StartLevel"),
 	Resupply UMETA(DisplayName = "Resupply"),
 	//upgrades
 	UpgradeWeapon UMETA(DisplayName = "UpgradeWeapon"),

@@ -11,20 +11,13 @@ class CHAR0_API ASpawnArea : public AActor
 
 	UPROPERTY()
 	USceneComponent* Billboard;
-	bool bIsStartSpawn;
 
 public:
 	UPROPERTY(EditInstanceOnly)
 	int32 Index;
 
 	UPROPERTY(EditInstanceOnly)
-	bool bStartSpawn;
-
-	UPROPERTY(EditInstanceOnly)
 	bool bPlayer;
-
-	UPROPERTY(EditInstanceOnly)
-	bool bRespawn;
 
 	ASpawnArea();
 

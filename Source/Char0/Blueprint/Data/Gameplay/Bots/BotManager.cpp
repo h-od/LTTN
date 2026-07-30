@@ -1,8 +1,9 @@
 ﻿#include "BotManager.h"
 
-#include "Spawn.h"
 #include "Char0/Blueprint/Actor/Spawn/SpawnArea.h"
 #include "Char0/Blueprint/Character/Bot/BotCharacter.h"
+#include "Char0/Blueprint/Data/Gameplay/Spawns/BotSpawns.h"
+#include "Char0/Blueprint/Data/Gameplay/Spawns/Spawn.h"
 #include "Char0/Blueprint/Data/Gameplay/Wave/WaveInfo.h"
 
 UWorld* UBotManager::GetWorld() const
@@ -15,21 +16,17 @@ void UBotManager::SetBotClass(const TSubclassOf<ABotCharacter> Class)
 	BotClass = Class;
 }
 
-void UBotManager::SetSpawnAreas(const TMap<int32, TTuple<ASpawnArea*, ASpawnArea*>>& SpawnAreas)
+void UBotManager::SetSpawnAreas(const TMap<int32, FBotSpawns>& SpawnAreas)
 {
 	Spawns = SpawnAreas;
 }
 
 void UBotManager::UpdateBotSpawnLocation(const int ClosestToHead)
 {
-	if (ClosestToHead <= 0)
-	{
-		SpawnIndex = 0;
-	}
-	else
-	{
-		SpawnIndex = ClosestToHead;
-	}
+	//TODO not closest to head, spawn one in the room where there is a player
+	// 
+
+	SpawnIndex = ClosestToHead;
 }
 
 void UBotManager::ActivateBotsForWave(const int32 Level, const FWaveInfo WaveInfo)
@@ -88,35 +85,14 @@ int32 UBotManager::GetSpawnAmount(const int32 WaveIndex)
 	}
 }
 
-ASpawnArea* UBotManager::GetSpawnArea(const int Index)
-{
-	ASpawnArea* SpawnArea;
-	if (Index % 2 == 0)
-	{
-		SpawnArea = Spawns[SpawnIndex].Key;
-	}
-	else
-	{
-		SpawnArea = Spawns[SpawnIndex].Value;
-	}
-	return SpawnArea;
-}
-
 void UBotManager::Spawn()
 {
 	bool bSuccess;
 	const FSpawn Subject = ToSpawn.Top();
-	FVector SpawnLocation;
 
-	if (Subject.WaveIndex == 10)
-	{
-		SpawnLocation = Spawns[12].Key->GetSpawnPoint();
-	}
-	else
-	{
-		SpawnLocation = GetSpawnArea(Subject.Index)->GetSpawnPoint();
-	}
-	
+	//TODO spawn indices
+	const FVector SpawnLocation = Spawns[SpawnIndex].GetNext()->GetSpawnPoint();
+
 	if (BotPool.Contains(Subject.Index))
 	{
 		if (ABotCharacter* BotCharacter = BotPool[Subject.Index]; BotCharacter->SetActorLocation(SpawnLocation, false))
@@ -133,7 +109,7 @@ void UBotManager::Spawn()
 	{
 		FActorSpawnParameters SpawnParams = FActorSpawnParameters();
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::DontSpawnIfColliding;
-		
+
 		if (ABotCharacter* Bot = GetWorld()->SpawnActor<ABotCharacter>(BotClass, SpawnLocation, FRotator(), SpawnParams))
 		{
 			BotPool.Add(Subject.Index, Bot);

@@ -26,6 +26,11 @@ void ALttnHud::Initialise(const FPlayerManager& PlayerManager)
 	OverlayWidget->AddToViewport();
 }
 
+void ALttnHud::SetWave(const int32 Wave) const
+{
+	Overlay->SetWave(FText::FromString(std::to_string(Wave).c_str()));
+}
+
 void ALttnHud::SetHealth(const float Health) const
 {
 	Overlay->SetPlayerHealth(Health);
@@ -82,12 +87,7 @@ void ALttnHud::ShowInteract(const bool bShow) const
 
 void ALttnHud::ShowSpectating(bool bShow)
 {
-	//TODO remove overlay and replace with Spectating overlay
-}
-
-void ALttnHud::ShowCantStartGame()
-{
-	Overlay->ShowCantStartGame();
+	//TODO remove overlay and replace with Spectating overlay 
 }
 
 UOverlayWidget* ALttnHud::GetOverlay()

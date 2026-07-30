@@ -60,9 +60,10 @@ protected:
 	virtual void OnPossess(APawn* PawnToPossess) override;
 
 public:
-	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
-	void CantStartGame();
+	void ShowStartGame();
+	void SetWave(const int32 Wave);
 	void UpdateWeaponProjectiles(int32 Count) const;
 	void PlayerIsReloading(float ReloadTime) const;
 	void PlayerReloaded(int32 WeaponProjectileCount, int32 PlayerProjectileCount) const;
@@ -116,8 +117,12 @@ private:
 	void Server_StartLevel_Implementation();
 	
 	UFUNCTION(Client, Reliable)
-	void Client_CantStartGame();
-	void Client_CantStartGame_Implementation();
+	void Client_ShowStartGame();
+	void Client_ShowStartGame_Implementation();
+	
+	UFUNCTION(Client, Reliable)
+	void Client_SetWave(const int32 Wave);
+	void Client_SetWave_Implementation(const int32 Wave);
 	
 	UFUNCTION(Server, Reliable)
 	void Server_DoRevive(int32 IdToRevive);

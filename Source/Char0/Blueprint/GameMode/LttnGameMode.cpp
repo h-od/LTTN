@@ -5,6 +5,7 @@
 #include "Char0/Blueprint/Character/LttnCharacter.h"
 #include "Char0/Blueprint/Controller/LttnController.h"
 #include "Char0/Blueprint/Data/Gameplay/Bots/BotManager.h"
+#include "Char0/Blueprint/Data/Gameplay/Spawns/BotSpawns.h"
 #include "Char0/Blueprint/State/Game/LttnGameState.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -65,17 +66,17 @@ void ALttnGameMode::UpdateBotSpawnLocation()
 
 void ALttnGameMode::StartGame()
 {
-	for (const TTuple PlayerLocation : PlayersLocation)
-	{
-		if (PlayerLocation.Value != -1)
-		{
-			for (ALttnController* Player : Players)
-			{
-				Player->CantStartGame();
-			}
-			return;
-		}
-	}
+	// for (const TTuple PlayerLocation : PlayersLocation)
+	// {
+	// 	if (PlayerLocation.Value != -1)
+	// 	{
+	// 		for (ALttnController* Player : Players)
+	// 		{
+	// 			Player->CantStartGame();
+	// 		}
+	// 		return;
+	// 	}
+	// }
 }
 
 void ALttnGameMode::StartLevel()
@@ -165,7 +166,6 @@ APawn* ALttnGameMode::GetPlayerPawn(const int32 PlayerId)
 
 void ALttnGameMode::RevivePlayer(const int32 RevivingPlayerId, const int32 PlayerToReviveId)
 {
-	
 	PlayersAlive[PlayerToReviveId] = true;
 	Spawn(Players[PlayerToReviveId], true);
 	State->RevivedPlayer(RevivingPlayerId);
@@ -199,10 +199,9 @@ void ALttnGameMode::OnPostLogin(AController* NewPlayer)
 	const int32 PlayerId = Players.Num();
 	Players.Add(LttnController);
 	LttnController->Id = PlayerId;
-	UpdatePlayerLocation(PlayerId, -2); // (-2 = lobby)
+	UpdatePlayerLocation(PlayerId, 0); // Spawn Location
 
 	PlayersAlive.Add(PlayerId, true);
-
 
 	FindAndSetSpawnAreas();
 	Spawn(LttnController, false);
@@ -228,38 +227,25 @@ void ALttnGameMode::FindAndSetSpawnAreas()
 	TArray<AActor*> FoundSpawnAreaActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpawnArea::StaticClass(), FoundSpawnAreaActors);
 
-	TMap<int32, TTuple<ASpawnArea*, ASpawnArea*>> SpawnAreas;
+	TMap<int32, FBotSpawns> SpawnAreas;
 	for (AActor* Actor : FoundSpawnAreaActors)
 	{
 		if (Actor->IsA(ASpawnArea::StaticClass()))
 		{
 			if (ASpawnArea* SpawnArea = Cast<ASpawnArea>(Actor); SpawnArea->bPlayer)
 			{
-				if (SpawnArea->bStartSpawn)
-				{
-					StartSpawnLocation = SpawnArea->GetSpawnPoint();
-				}
-				else
-				{
-					if (SpawnArea->bRespawn)
-					{
-						PlayerReSpawn.Add(SpawnArea);
-					}
-					else
-					{
-						PlayerSpawn.Add(SpawnArea);
-					}
-				}
+				PlayerReSpawn.Add(SpawnArea); //TODO remove respawn and respawn in place 
+				PlayerSpawn.Add(SpawnArea);
 			}
 			else
 			{
-				if (int32 InKey = SpawnArea->Index; SpawnAreas.Contains(InKey))
+				if (SpawnAreas.Contains(SpawnArea->Index))
 				{
-					SpawnAreas.Add(InKey, TTuple<ASpawnArea*, ASpawnArea*>(SpawnAreas[InKey].Key, SpawnArea));
+					SpawnAreas[SpawnArea->Index].Add(SpawnArea);
 				}
 				else
 				{
-					SpawnAreas.Add(InKey, TTuple<ASpawnArea*, ASpawnArea*>(SpawnArea, nullptr));
+					SpawnAreas.Add(SpawnArea->Index, FBotSpawns(SpawnArea->Index, SpawnArea));
 				}
 			}
 		}
@@ -274,6 +260,10 @@ void ALttnGameMode::StartWave()
 {
 	const FWaveInfo Wave = GameplayManager.StartWave();
 	BotManager->ActivateBotsForWave(CurrentLevel, Wave);
+	for (ALttnController* Player : Players)
+	{
+		Player->SetWave(Wave.Index);
+	}
 }
 
 void ALttnGameMode::Server_UpdateBotSpawnLocation_Implementation()

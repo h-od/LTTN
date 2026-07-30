@@ -37,6 +37,7 @@ protected:
 	
 public:
 	void Initialise(const FPlayerManager& PlayerManager);
+	void SetWave(int32 Wave) const;
 	void SetHealth(float Health) const;
 	void SetStamina(float Health) const;
 	void SetWeaponProjectiles(int32 Count) const;
@@ -49,7 +50,6 @@ public:
 	
 	void ShowInteract(bool bShow) const;
 	void ShowSpectating(bool bShow);
-	void ShowCantStartGame();
 
 private:
 	UOverlayWidget* GetOverlay();
