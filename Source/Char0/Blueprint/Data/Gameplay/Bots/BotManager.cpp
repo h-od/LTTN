@@ -21,12 +21,10 @@ void UBotManager::SetSpawnAreas(const TMap<int32, FBotSpawns>& SpawnAreas)
 	Spawns = SpawnAreas;
 }
 
-void UBotManager::UpdateBotSpawnLocation(const int ClosestToHead)
+void UBotManager::UpdateBotSpawnLocations(const TArray<int32>& ClosestToCenter)
 {
-	//TODO not closest to head, spawn one in the room where there is a player
-	// 
-
-	SpawnIndex = ClosestToHead;
+	//TODO not closest to center, spawn in each room that has a player
+	SpawnIndices = ClosestToCenter;
 }
 
 void UBotManager::ActivateBotsForWave(const int32 Level, const FWaveInfo WaveInfo)
@@ -88,7 +86,7 @@ void UBotManager::Spawn()
 	const FSpawn Subject = ToSpawn.Top();
 
 	//TODO spawn indices
-	const FVector SpawnLocation = Spawns[SpawnIndex].GetNext()->GetSpawnPoint();
+	const FVector SpawnLocation = Spawns[GetNextSpawnIndex()].GetNext()->GetSpawnPoint();
 
 	if (BotPool.Contains(Subject.Index))
 	{
@@ -128,4 +126,19 @@ void UBotManager::Spawn()
 	{
 		World->GetTimerManager().ClearTimer(SpawnTimerHandle);
 	}
+}
+
+int32 UBotManager::GetNextSpawnIndex()
+{
+	if (SpawnIndices.Num() == 1)
+	{
+		return SpawnIndices[0];
+	}
+
+	if (++LastSpawnedLocationIndex == SpawnIndices.Num())
+	{
+		LastSpawnedLocationIndex = 0;
+	}
+	
+	return SpawnIndices[LastSpawnedLocationIndex];
 }
