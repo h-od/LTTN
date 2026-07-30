@@ -1,5 +1,4 @@
-﻿
-#include "LevelInfo.h"
+﻿#include "LevelInfo.h"
 
 #include <string>
 
@@ -7,19 +6,8 @@
 
 FLevelInfo::FLevelInfo()
 {
-	Level = 0;
 	CurrentWave = 0;
-}
-
-FLevelInfo::FLevelInfo(const int32 Lvl)
-{
-	Level = Lvl; 
-	CurrentWave = 0;
-	
-	for (int i = 0; i <= 10; i++)
-	{
-		Waves.Add(FWaveInfo(i));
-	}
+	Waves.Add(FWaveInfo(CurrentWave));
 }
 
 FWaveInfo FLevelInfo::DecrementBot()
@@ -28,26 +16,10 @@ FWaveInfo FLevelInfo::DecrementBot()
 	return Waves[CurrentWave];
 }
 
-bool FLevelInfo::IsComplete()
-{
-	for (const FWaveInfo Wave : Waves)
-	{
-		if (!Wave.AllDestroyed())
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
-bool FLevelInfo::HasNextWave() const
-{
-	return CurrentWave < Waves.Num();
-}
-
 void FLevelInfo::SetNextWave()
 {
-	CurrentWave++;
+	// CurrentWave++;
+	Waves.Add(FWaveInfo(++CurrentWave));
 }
 
 FWaveInfo FLevelInfo::StartWave()
@@ -55,20 +27,9 @@ FWaveInfo FLevelInfo::StartWave()
 	return Waves[CurrentWave];
 }
 
-void FLevelInfo::Next()
-{
-	Level++; 
-	CurrentWave = 0;
-	
-	for (int i = 0; i <= 10; i++)
-	{
-		Waves.Add(FWaveInfo(i));
-	}
-}
-
 FString FLevelInfo::ToString()
 {
-	FString ReturnString = FString("Level #") + FString(std::to_string(Level).c_str());
+	FString ReturnString = FString("Current Wave #") + FString::FromInt(CurrentWave);
 	for (const auto& Wave : Waves)
 	{
 		ReturnString += "\n\t" + Wave.ToString();;

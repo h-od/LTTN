@@ -13,31 +13,9 @@ void FGameplayManager::SetNextWave()
 	Level.SetNextWave();
 }
 
-bool FGameplayManager::IsLevelComplete()
-{
-	return Level.IsComplete();
-}
-
-void FGameplayManager::StartLevel()
-{
-	CompletedLevels.Add(Level);
-	Level.Next();
-}
-
-bool FGameplayManager::HasNextWave() const
-{
-	return Level.HasNextWave();
-}
-
 FWaveInfo FGameplayManager::StartWave() 
 {
 	return Level.StartWave();
-}
-
-TArray<FLevelInfo> FGameplayManager::GetAllLevels()
-{
-	CompletedLevels.Add(Level);
-	return CompletedLevels;
 }
 
 FString FGameplayManager::ToString() 

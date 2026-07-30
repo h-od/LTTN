@@ -10,13 +10,8 @@ USTRUCT()
 struct CHAR0_API FLevelInfo 
 {
 	GENERATED_BODY()
-	
+
 private:
-public:
-	UPROPERTY()
-	int32 Level = 0;
-private:
-	
 	UPROPERTY()
 	int32 CurrentWave = 0;
 	UPROPERTY()
@@ -24,14 +19,10 @@ private:
 
 public:
 	FLevelInfo();
-	explicit FLevelInfo(int32 Lvl);
 	
 	FWaveInfo DecrementBot();
-	bool IsComplete();
-	bool HasNextWave() const;
 	void SetNextWave();
 	FWaveInfo StartWave();
-	void Next();
 
 	FString ToString();
 };

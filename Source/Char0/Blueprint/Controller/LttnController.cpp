@@ -123,24 +123,9 @@ void ALttnController::ShowCanInteract(const bool bShow) const
 	HUD->ShowInteract(bShow);
 }
 
-bool ALttnController::CanStartGame()
-{
-	return true; //TODO
-}
-
-bool ALttnController::CanStartLevel()
-{
-	return true; //todo
-}
-
 void ALttnController::StartGame()
 {
 	Server_StartGame();
-}
-
-void ALttnController::StartLevel()
-{
-	Server_StartLevel();
 }
 
 void ALttnController::PlayerDead()
@@ -242,11 +227,6 @@ void ALttnController::Client_InitialiseHud_Implementation(const FPlayerManager& 
 void ALttnController::Server_StartGame_Implementation()
 {
 	GetLttnGameMode()->StartGame();
-}
-
-void ALttnController::Server_StartLevel_Implementation()
-{
-	GetLttnGameMode()->StartLevel();
 }
 
 void ALttnController::Client_ShowStartGame_Implementation()

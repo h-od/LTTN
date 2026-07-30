@@ -39,14 +39,11 @@ void ALttnGameMode::DecrementBots(const int32 PlayerId)
 {
 	const FWaveInfo WaveInfo = GameplayManager.DecrementBot();
 	State->DecrementBot(PlayerId);
-	if (GameplayManager.IsLevelComplete())
-	{
-		State->LevelCompleted();
-		State->bCanStartNewLevel = true;
-	}
-	if (!GameplayManager.IsLevelComplete() and WaveInfo.AllDestroyed() and GameplayManager.HasNextWave())
+
+	if (WaveInfo.AllDestroyed())
 	{
 		GameplayManager.SetNextWave();
+		State->WaveCompleted();
 		GetWorldTimerManager().ClearTimer(NextWaveTimerHandle);
 		GetWorldTimerManager().SetTimer(NextWaveTimerHandle, this, &ALttnGameMode::StartWave,
 		                                5.0f, false);
@@ -66,27 +63,6 @@ void ALttnGameMode::UpdateBotSpawnLocation()
 
 void ALttnGameMode::StartGame()
 {
-	// for (const TTuple PlayerLocation : PlayersLocation)
-	// {
-	// 	if (PlayerLocation.Value != -1)
-	// 	{
-	// 		for (ALttnController* Player : Players)
-	// 		{
-	// 			Player->CantStartGame();
-	// 		}
-	// 		return;
-	// 	}
-	// }
-}
-
-void ALttnGameMode::StartLevel()
-{
-	if (GameplayManager.IsLevelComplete())
-	{
-		State->bCanStartNewLevel = false;
-		GameplayManager.StartLevel();
-	}
-
 	StartWave();
 
 	for (const auto Player : Players)

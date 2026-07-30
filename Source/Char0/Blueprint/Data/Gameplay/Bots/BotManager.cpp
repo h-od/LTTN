@@ -77,11 +77,8 @@ int32 UBotManager::GetSpawnAmount(const int32 WaveIndex)
 		return 90;
 	case 9:
 		return 100;
-	case 10:
-		return 250;
 	default:
-		//TODO throw exception?
-		return 0;
+		return 250;
 	}
 }
 

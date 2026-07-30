@@ -100,9 +100,9 @@ void ALttnGameState::PlayerDowned(const int32 PlayerId)
 	}
 }
 
-void ALttnGameState::LevelCompleted()
+void ALttnGameState::WaveCompleted()
 {
-	LevelsCompleted++;
+	WavesCompleted++;
 }
 
 void ALttnGameState::DecrementBot(const int32 PlayerId)
@@ -153,16 +153,16 @@ FString ALttnGameState::GetSummary(const int32 PlayerId, const bool bIsMulti) co
 	}
 
 	FString Summary = "\n\t" + FString("Player: #") + FString(std::to_string(PlayerId).c_str()) +
-		"\n\t" + FString("You survived ") + FString(std::to_string(LevelsCompleted).c_str()) + FString(" levels") +
+		"\n\t" + FString("You survived ") + FString(std::to_string(WavesCompleted).c_str()) + FString(" waves") +
 		"\n\t" + FString("You destroyed ") + FString(std::to_string(PlayerSummary.Destroyed).c_str()) + FString(" enemies") +
 		"\n\t" + FString("You earned ") + FString(std::to_string(PlayerSummary.PointsEarned).c_str()) + FString(" points") +
-		"\n\t" + FString("You spent ") + FString(std::to_string(PlayerSummary.PointsSpent).c_str()) + FString(" points") +
-		"\n\t" + FString("You died ") + FString(std::to_string(PlayerSummary.TimesDowned).c_str()) + FString(" times") +
-		"\n\t" + FString("You resurrected ") + FString(std::to_string(PlayerSummary.Revives).c_str()) + FString(" players");
+		"\n\t" + FString("You spent ") + FString(std::to_string(PlayerSummary.PointsSpent).c_str()) + FString(" points");
 
 	if (bIsMulti)
 	{
-		Summary += "\n\n\t" + FString("Team destroyed ") + FString(std::to_string(Destroyed).c_str()) + FString(" enemies!") +
+		Summary += "\n\t" + FString("You died ") + FString(std::to_string(PlayerSummary.TimesDowned).c_str()) + FString(" times") +
+			"\n\t" + FString("You revived ") + FString(std::to_string(PlayerSummary.Revives).c_str()) + FString(" players") +
+			"\n\n\t" + FString("Team destroyed ") + FString(std::to_string(Destroyed).c_str()) + FString(" enemies!") +
 			"\n\t" + FString("Team earned  ") + FString(std::to_string(TeamPointsEarned).c_str()) + FString(" points!") +
 			"\n\t" + FString("Team spent  ") + FString(std::to_string(TeamPointsSpent).c_str()) + FString(" points!");
 	}

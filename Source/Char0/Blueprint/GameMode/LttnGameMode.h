@@ -69,7 +69,6 @@ public:
 
 	void StartGame();
 
-	void StartLevel();
 	void CheckForDeadPlayers();
 
 	void PlayerDead(int32 PlayerId);

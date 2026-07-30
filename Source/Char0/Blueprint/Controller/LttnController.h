@@ -78,10 +78,7 @@ public:
 	void ShowResupplyCooldown(float TimerRemaining) const;
 	void ShowPlayerProjectiles(int32 Projectiles) const;
 	void ShowCanInteract(bool bShow) const;
-	bool CanStartGame();
-	bool CanStartLevel();
 	void StartGame();
-	void StartLevel();
 
 	void PlayerDead();
 	UFUNCTION(Server, Reliable)
@@ -111,10 +108,6 @@ private:
 	UFUNCTION(Server, Reliable)
 	void Server_StartGame();
 	void Server_StartGame_Implementation();
-	
-	UFUNCTION(Server, Reliable)
-	void Server_StartLevel();
-	void Server_StartLevel_Implementation();
 	
 	UFUNCTION(Client, Reliable)
 	void Client_ShowStartGame();

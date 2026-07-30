@@ -25,15 +25,12 @@ class CHAR0_API ALttnGameState : public AGameState
 	FPlayerSummary PlayerThree;
 	
 	UPROPERTY(Replicated)
-	int32 LevelsCompleted = 0;
+	int32 WavesCompleted = 0;
 
 public:
 	
 	UPROPERTY(Replicated)
 	bool bGameStarted = false;
-
-	UPROPERTY(Replicated)
-	bool bCanStartNewLevel = true;
 	
 	UFUNCTION()
 	void OnRep_PlayerOne();
@@ -49,7 +46,7 @@ public:
 	void RevivedPlayer(int32 PlayerId);
 	void PlayerDowned(int32 PlayerId);
 
-	void LevelCompleted();
+	void WaveCompleted();
 	void DecrementBot(int32 PlayerId);
 	void ScoreIncreased(int32 PlayerId, int32 Amount);
 	void ScoreDecreased(int32 PlayerId, int32 Amount);
