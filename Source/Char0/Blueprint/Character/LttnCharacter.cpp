@@ -177,7 +177,7 @@ float ALttnCharacter::TakeDamage(const float Damage, const FDamageEvent& DamageE
 
 void ALttnCharacter::Client_TakeDamage_Implementation(const float Damage, AActor* DamageCauser)
 {
-	if (bIsDead)
+	if (bIsDead or !IsLocallyControlled())
 	{
 		return;
 	}
@@ -277,7 +277,10 @@ void ALttnCharacter::StoppedMoving()
 void ALttnCharacter::PlayerDead()
 {
 	bIsDead = true;
-	GetLttnController()->PlayerDead();
+	if (ALttnController* Con = GetLttnController())
+	{
+		Con->PlayerDead();
+	}
 }
 
 void ALttnCharacter::SetRagDoll()
@@ -642,7 +645,7 @@ void ALttnCharacter::Interact()
 	{
 	case EInteractableType::StartGame:
 		GetLttnController()->StartGame();
-		CanInteract(Interactable);
+		CantInteract();
 		break;
 	case EInteractableType::Resupply:
 		GameplayComponent->Resupply();

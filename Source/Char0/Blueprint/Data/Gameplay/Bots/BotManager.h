@@ -65,7 +65,10 @@ class CHAR0_API UBotManager : public UObject
 	TSubclassOf<ABotCharacter> BotClass;
 
 	UPROPERTY()
-	int SpawnIndex = -1;
+	TArray<int32> SpawnIndices;
+	
+	UPROPERTY()
+	int32 LastSpawnedLocationIndex = 0;
 
 	TMap<int32, FBotSpawns> Spawns;
 
@@ -80,7 +83,7 @@ public:
 
 	void SetBotClass(TSubclassOf<ABotCharacter> Class);
 	void SetSpawnAreas(const TMap<int32, FBotSpawns>& SpawnAreas);
-	void UpdateBotSpawnLocation(int ClosestToHead);
+	void UpdateBotSpawnLocations(const TArray<int32>& ClosestToCenter);
 	
 	UFUNCTION()
 	void ActivateBotsForWave(const int32 Level, FWaveInfo WaveInfo);
@@ -91,4 +94,5 @@ private:
 
 	UFUNCTION()
 	void Spawn();
+	int32 GetNextSpawnIndex();
 };

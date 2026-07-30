@@ -112,7 +112,7 @@ void ABotCharacter::DoWeaponTrace()
 		const FVector RightSocket = GetMesh()->GetSocketLocation(FName("hand_r"));
 
 		FHitResult OutHit;
-		const bool bHit = UKismetSystemLibrary::SphereTraceSingleForObjects(GetWorld(), RightSocket, RightSocket, 10.0f, TraceObjectTypes, false, ToIgnore, EDrawDebugTrace::Type::ForDuration, OutHit,
+		const bool bHit = UKismetSystemLibrary::SphereTraceSingleForObjects(GetWorld(), RightSocket, RightSocket, 10.0f, TraceObjectTypes, false, ToIgnore, EDrawDebugTrace::Type::None, OutHit,
 		                                                                    true,
 		                                                                    FLinearColor::Red, FLinearColor::Green, 1.0);
 

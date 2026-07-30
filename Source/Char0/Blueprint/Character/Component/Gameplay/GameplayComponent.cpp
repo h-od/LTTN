@@ -75,7 +75,10 @@ void UGameplayComponent::TakeDamage(const float Damage, const FVector& DamageDir
 
 	if (const float NewHealth = PlayerManager.UpdatePlayerHealth(-1 * Damage); NewHealth <= 0)
 	{
-		GetCharacter()->PlayerDead();
+		if (ALttnCharacter* Char = GetCharacter())
+		{
+			Char->PlayerDead();
+		}
 	}
 	else
 	{

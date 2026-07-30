@@ -107,7 +107,7 @@ void ALttnGameMode::CheckForDeadPlayers()
 
 void ALttnGameMode::PlayerDead(const int32 PlayerId)
 {
-	UpdateBotSpawnLocation();
+	UpdatePlayerLocation(PlayerId, -1);
 	PlayersAlive[PlayerId] = false;
 
 	State->PlayerDowned(PlayerId);
@@ -157,8 +157,8 @@ void ALttnGameMode::OpenDoor(const int32 DoorNumber)
 void ALttnGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	BotManager = NewObject<UBotManager>(this, UBotManager::StaticClass());
-	BotManager->SetBotClass(BotClass);
+	// BotManager = NewObject<UBotManager>(this, UBotManager::StaticClass());
+	// BotManager->SetBotClass(BotClass);
 
 	GameplayManager = FGameplayManager();
 
@@ -169,15 +169,18 @@ void ALttnGameMode::BeginPlay()
 void ALttnGameMode::OnPostLogin(AController* NewPlayer)
 {
 	Super::OnPostLogin(NewPlayer);
+	
+	BotManager = NewObject<UBotManager>(this, UBotManager::StaticClass());
+	BotManager->SetBotClass(BotClass);
 	State = Cast<ALttnGameState>(GameState);
 
 	ALttnController* LttnController = Cast<ALttnController>(NewPlayer);
 	const int32 PlayerId = Players.Num();
 	Players.Add(LttnController);
 	LttnController->Id = PlayerId;
+	PlayersAlive.Add(PlayerId, true);
 	UpdatePlayerLocation(PlayerId, 0); // Spawn Location
 
-	PlayersAlive.Add(PlayerId, true);
 
 	FindAndSetSpawnAreas();
 	Spawn(LttnController, false);
@@ -245,19 +248,16 @@ void ALttnGameMode::StartWave()
 void ALttnGameMode::Server_UpdateBotSpawnLocation_Implementation()
 {
 	//TODO but not if player dead
-	int ClosestToHead = 11;
-	for (const TTuple Location : PlayersLocation)
+	TArray<int32> Locations;
+	for (const TTuple Alive : PlayersAlive)
 	{
-		if (Location.Value < ClosestToHead)
+		if (int32 Item = PlayersLocation[Alive.Key]; Alive.Value and Item >= 0)
 		{
-			ClosestToHead = Location.Value;
+			Locations.Add(Item);
 		}
 	}
 
-	if (BotManager and ClosestToHead != 11)
-	{
-		BotManager->UpdateBotSpawnLocation(ClosestToHead);
-	}
+	BotManager->UpdateBotSpawnLocations(Locations);
 }
 
 bool ALttnGameMode::AllDead()

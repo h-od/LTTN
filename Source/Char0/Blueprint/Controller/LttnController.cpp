@@ -136,6 +136,11 @@ void ALttnController::PlayerDead()
 void ALttnController::Server_PlayerDead_Implementation()
 {
 	GetLttnGameMode()->PlayerDead(Id);
+
+	// if (ALttnCharacter* Char = Cast<ALttnCharacter>(GetCharacter()))
+	// {
+	// 	Char->SetRagDoll();
+	// }
 }
 
 void ALttnController::StartSpectate(const int32 SpectateId)
