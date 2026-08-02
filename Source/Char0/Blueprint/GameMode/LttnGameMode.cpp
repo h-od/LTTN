@@ -86,13 +86,16 @@ void ALttnGameMode::CheckForDeadPlayers()
 	{
 		for (const TTuple Alive : PlayersAlive)
 		{
-			if (Alive.Value)
+			if (ALttnController* Con = Players[Alive.Key])
 			{
-				Players[Alive.Key]->DisableSphere();
-			}
-			else
-			{
-				Players[Alive.Key]->EnableSphere();
+				if (Alive.Value)
+				{
+					Con->DisableSphere();
+				}
+				else
+				{
+					Con->EnableSphere();
+				}
 			}
 		}
 	}

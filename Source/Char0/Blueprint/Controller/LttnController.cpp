@@ -13,7 +13,7 @@
 void ALttnController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	GameState = Cast<ALttnGameState>(GetWorld()->GetGameState());
 }
 
@@ -156,7 +156,7 @@ void ALttnController::StartSpectate(const int32 SpectateId)
 	UnPossess();
 	CurrentlySpectating = SpectateId;
 	APawn* CharacterToSpectate = GetLttnGameMode()->GetPlayerPawn(SpectateId);
-	
+
 	FActorSpawnParameters SpawnParams = FActorSpawnParameters();
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::DontSpawnIfColliding;
 	SpectatePawn = GetWorld()->SpawnActor<ASpectateCharacter>(SpectatorClass, CharacterToSpectate->GetActorLocation(), CharacterToSpectate->GetControlRotation(), SpawnParams);
@@ -195,13 +195,14 @@ void ALttnController::DoRevive(const int32 IdToRevive)
 
 void ALttnController::EnableSphere()
 {
-	
-	LttnCharacter->EnableCollisionSphere(true);
+	if (ALttnCharacter* Char = LttnCharacter)
+	{
+		Char->EnableCollisionSphere(true);
+	}
 }
 
 void ALttnController::DisableSphere()
 {
-	
 	LttnCharacter->EnableCollisionSphere(false);
 }
 
@@ -259,7 +260,7 @@ void ALttnController::Client_GameOver_Implementation(const bool bIsMulti)
 
 	SummaryWidget->AddToViewport();
 	SummaryWidget->ShowSummary(
-		FText::FromString(GameState->GetSummary(Id, bIsMulti)) 
+		FText::FromString(GameState->GetSummary(Id, bIsMulti))
 	);
 }
 
@@ -267,8 +268,8 @@ ALttnGameMode* ALttnController::GetLttnGameMode()
 {
 	if (!LttnGameMode)
 	{
-		LttnGameMode =Cast<ALttnGameMode>(GetWorld()->GetAuthGameMode());
+		LttnGameMode = Cast<ALttnGameMode>(GetWorld()->GetAuthGameMode());
 	}
-	
+
 	return LttnGameMode;
 }
