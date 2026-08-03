@@ -242,6 +242,7 @@ void ALttnController::Client_ShowStartGame_Implementation()
 
 void ALttnController::Client_SetWave_Implementation(const int32 Wave)
 {
+	// UKismetSystemLibrary::PrintString(GetWorld(), "Start wave: " + FString::FromInt(Wave), true, false, FLinearColor::White, 5.0f);
 	HUD->SetWave(Wave);
 }
 
