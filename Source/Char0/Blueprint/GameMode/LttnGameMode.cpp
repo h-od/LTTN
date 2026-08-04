@@ -74,6 +74,7 @@ void ALttnGameMode::StartGame()
 
 void ALttnGameMode::CheckForDeadPlayers()
 {
+	//todo fix this shite
 	bool bAnyDead = false;
 	for (const TTuple Alive : PlayersAlive)
 	{
@@ -143,6 +144,36 @@ APawn* ALttnGameMode::GetPlayerPawn(const int32 PlayerId)
 	return Players[PlayerId]->GetPawn();
 }
 
+int32 ALttnGameMode::GetNextPawnToSpectate(int32 CurrentId) const
+{
+	if (++CurrentId == Players.Num())
+	{
+		CurrentId = 0;
+	}
+	
+	if (PlayersAlive[CurrentId])
+	{
+
+		return CurrentId;
+	}
+	return GetNextPawnToSpectate(CurrentId);
+}
+
+int32 ALttnGameMode::GetPreviousPawnToSpectate(int32 CurrentId) const
+{
+	if (--CurrentId < 0)
+	{
+		CurrentId = Players.Num() - 1;
+	}
+
+	if (PlayersAlive[CurrentId])
+	{
+
+		return CurrentId;
+	}
+	return GetPreviousPawnToSpectate(CurrentId);
+}
+
 void ALttnGameMode::RevivePlayer(const int32 RevivingPlayerId, const int32 PlayerToReviveId)
 {
 	PlayersAlive[PlayerToReviveId] = true;
@@ -172,7 +203,7 @@ void ALttnGameMode::BeginPlay()
 void ALttnGameMode::OnPostLogin(AController* NewPlayer)
 {
 	Super::OnPostLogin(NewPlayer);
-	
+
 	BotManager = NewObject<UBotManager>(this, UBotManager::StaticClass());
 	BotManager->SetBotClass(BotClass);
 	State = Cast<ALttnGameState>(GameState);

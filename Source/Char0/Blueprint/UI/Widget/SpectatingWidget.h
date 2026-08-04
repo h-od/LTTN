@@ -8,6 +8,18 @@ UCLASS()
 class CHAR0_API USpectatingWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
-	//TODO needed?
+
+public:
+	void Show();
+	void Hide();
 };
+
+inline void USpectatingWidget::Show()
+{
+	SetVisibility(ESlateVisibility::Visible);
+}
+
+inline void USpectatingWidget::Hide()
+{
+	SetVisibility(ESlateVisibility::Collapsed);
+}

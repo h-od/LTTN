@@ -85,9 +85,18 @@ void ALttnHud::ShowInteract(const bool bShow) const
 	Overlay->ShowInteract(bShow);
 }
 
-void ALttnHud::ShowSpectating(bool bShow)
+void ALttnHud::ShowSpectating(const bool bShow)
 {
-	//TODO remove overlay and replace with Spectating overlay 
+	if (bShow)
+	{
+		GetOverlay()->Hide();
+		GetSpectate()->Show();
+	}
+	else
+	{
+		GetOverlay()->Show();
+		GetSpectate()->Hide();
+	}
 }
 
 UOverlayWidget* ALttnHud::GetOverlay()
@@ -113,6 +122,7 @@ USpectatingWidget* ALttnHud::GetSpectate()
 	if (!SpectatingWidget)
 	{
 		SpectatingWidget = Cast<USpectatingWidget>(CreateWidget(GetWorld(), SpectatingWidgetClass));
+		SpectatingWidget->AddToViewport();
 	}
 	return SpectatingWidget;
 }

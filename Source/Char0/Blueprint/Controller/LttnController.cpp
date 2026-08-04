@@ -20,29 +20,31 @@ void ALttnController::BeginPlay()
 void ALttnController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-	if (IsLocalPlayerController())
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-		{
-			for (const UInputMappingContext* Context : MappingContexts)
-			{
-				Subsystem->AddMappingContext(Context, 0);
-			}
-		}
-	}
+// 	if (IsLocalPlayerController())
+// 	{
+// 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+// 		{
+// 			for (const UInputMappingContext* Context : MappingContexts)
+// 			{
+// 				Subsystem->AddMappingContext(Context, 0);
+// 			}
+// 		}
+// 	}
 }
 
 void ALttnController::OnPossess(APawn* PawnToPossess)
 {
 	Super::OnPossess(PawnToPossess);
+	// UKismetSystemLibrary::PrintString(GetWorld(), "OnPossess: " + PawnToPossess->GetName(), true, false, FLinearColor::White, 5.0f);
 	LttnCharacter = Cast<ALttnCharacter>(PawnToPossess);
 	if (LttnCharacter)
 	{
 		InitialiseHud(LttnCharacter->GetPlayerManager());
 	}
+	Client_OnPossess(PawnToPossess->IsA(ASpectateCharacter::StaticClass()));
 }
 
-void ALttnController::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+void ALttnController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ALttnController, Id);
@@ -161,7 +163,25 @@ void ALttnController::StartSpectate(const int32 SpectateId)
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::DontSpawnIfColliding;
 	SpectatePawn = GetWorld()->SpawnActor<ASpectateCharacter>(SpectatorClass, CharacterToSpectate->GetActorLocation(), CharacterToSpectate->GetControlRotation(), SpawnParams);
 	Possess(SpectatePawn);
-	SpectatePawn->Attach(CharacterToSpectate);
+	const FAttachmentTransformRules Rules = FAttachmentTransformRules(
+		EAttachmentRule::SnapToTarget,
+		EAttachmentRule::KeepRelative,
+		EAttachmentRule::KeepRelative,
+		true
+	);
+
+	SpectatePawn->AttachToActor(CharacterToSpectate, Rules, "head");
+	Client_ShowSpectate();
+}
+
+void ALttnController::SpectatePrevious()
+{
+	Server_SpectatePrevious();
+}
+
+void ALttnController::SpectateNext()
+{
+	Server_SpectateNext();
 }
 
 bool ALttnController::HasRagDoll() const
@@ -211,6 +231,27 @@ void ALttnController::OpenDoor(const int32 DoorNumber)
 	Server_OpenDoor(DoorNumber);
 }
 
+void ALttnController::Client_OnPossess_Implementation(const bool bIsSpectate)
+{
+	if (IsLocalPlayerController())
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+		{
+			if (bIsSpectate)
+			{
+				Subsystem->RemoveMappingContext(MappingContext);
+				Subsystem->AddMappingContext(SpectateMappingContext, 0);
+			}
+			else 
+			{
+				Subsystem->AddMappingContext(MappingContext, 0);
+				Subsystem->RemoveMappingContext(SpectateMappingContext);
+			}
+			
+		}
+	}
+}
+
 void ALttnController::Server_OpenDoor_Implementation(int32 DoorNumber)
 {
 	GetLttnGameMode()->OpenDoor(DoorNumber);
@@ -228,6 +269,7 @@ void ALttnController::Client_InitialiseHud_Implementation(const FPlayerManager& 
 		HUD = Cast<ALttnHud>(GetHUD());
 	}
 	HUD->Initialise(PlayerManager);
+	HUD->ShowSpectating(false);
 }
 
 void ALttnController::Server_StartGame_Implementation()
@@ -238,6 +280,47 @@ void ALttnController::Server_StartGame_Implementation()
 void ALttnController::Client_ShowStartGame_Implementation()
 {
 	// HUD->ShowGameStart();
+}
+
+void ALttnController::Client_ShowSpectate_Implementation()
+{
+	HUD->ShowSpectating(true);
+}
+
+void ALttnController::Server_SpectatePrevious_Implementation()
+{
+	if (!SpectatePawn)
+	{
+		return; //TODO should probably spawn?
+	}
+
+	const FAttachmentTransformRules Rules = FAttachmentTransformRules(
+		EAttachmentRule::SnapToTarget,
+		EAttachmentRule::KeepRelative,
+		EAttachmentRule::KeepRelative,
+		true
+		);
+
+	CurrentlySpectating = GetLttnGameMode()->GetPreviousPawnToSpectate(CurrentlySpectating);
+	SpectatePawn->AttachToActor(GetLttnGameMode()->GetPlayerPawn(CurrentlySpectating), Rules, "head");
+}
+
+void ALttnController::Server_SpectateNext_Implementation()
+{
+	if (!SpectatePawn)
+	{
+		return; //TODO should probably spawn?
+	}
+
+	const FAttachmentTransformRules Rules = FAttachmentTransformRules(
+		EAttachmentRule::SnapToTarget,
+		EAttachmentRule::KeepRelative,
+		EAttachmentRule::KeepRelative,
+		true
+	);
+
+	CurrentlySpectating = GetLttnGameMode()->GetNextPawnToSpectate(CurrentlySpectating);
+	SpectatePawn->AttachToActor(GetLttnGameMode()->GetPlayerPawn(CurrentlySpectating), Rules, "head");
 }
 
 void ALttnController::Client_SetWave_Implementation(const int32 Wave)

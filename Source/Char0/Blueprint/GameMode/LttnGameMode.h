@@ -74,6 +74,8 @@ public:
 	void PlayerDead(int32 PlayerId);
 	
 	APawn* GetPlayerPawn(int32 PlayerId);
+	int32 GetNextPawnToSpectate(int32 CurrentId) const;
+	int32 GetPreviousPawnToSpectate(int32 CurrentId) const;
 
 	void RevivePlayer(int32 RevivingPlayerId, int32 PlayerToReviveId);
 	

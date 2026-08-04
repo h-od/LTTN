@@ -2,12 +2,13 @@
 
 #include "EnhancedInputComponent.h"
 #include "Char0/Blueprint/Character/LttnCharacter.h"
+#include "Char0/Blueprint/Controller/LttnController.h"
+#include "Char0/Blueprint/GameMode/LttnGameMode.h"
 #include "Kismet/GameplayStatics.h"
 
 void ASpectateCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	//TODO widget
 }
 
 void ASpectateCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -18,6 +19,8 @@ void ASpectateCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	{
 		EnhancedInputComponent->BindAction(GamepadLookAction, ETriggerEvent::Triggered, this, &ASpectateCharacter::GamepadLook);
 		EnhancedInputComponent->BindAction(MouseLookAction, ETriggerEvent::Triggered, this, &ASpectateCharacter::MouseLook);
+		EnhancedInputComponent->BindAction(PreviousAction, ETriggerEvent::Completed, this, &ASpectateCharacter::Previous);
+		EnhancedInputComponent->BindAction(NextAction, ETriggerEvent::Completed, this, &ASpectateCharacter::Next);
 	}
 }
 
@@ -54,19 +57,31 @@ void ASpectateCharacter::MouseLook(const FInputActionValue& Value)
 	}
 }
 
-void ASpectateCharacter::Attach(APawn* Pawn)
+void ASpectateCharacter::Previous()
 {
-	Server_Attach(Pawn);
+	GetLttnController()->SpectatePrevious();
 }
 
-void ASpectateCharacter::Server_Attach_Implementation(APawn* Pawn)
+void ASpectateCharacter::Next()
 {
-	const FAttachmentTransformRules Rules = FAttachmentTransformRules(
-		EAttachmentRule::SnapToTarget,
-		EAttachmentRule::KeepRelative,
-		EAttachmentRule::KeepRelative,
-		true
-	);
+	GetLttnController()->SpectateNext();
+}
 
-	AttachToActor(Pawn, Rules, "head");
+ALttnController* ASpectateCharacter::GetLttnController()
+{
+	if (!LttnController)
+	{
+		LttnController = Cast<ALttnController>(GetController());
+	}
+	return LttnController;
+}
+
+ALttnGameMode* ASpectateCharacter::GetLttnGameMode()
+{
+	if (!LttnGameMode)
+	{
+		LttnGameMode = Cast<ALttnGameMode>(GetWorld()->GetAuthGameMode());
+	}
+
+	return LttnGameMode;
 }

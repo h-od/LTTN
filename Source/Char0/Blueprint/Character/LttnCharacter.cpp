@@ -168,10 +168,10 @@ float ALttnCharacter::TakeDamage(const float Damage, const FDamageEvent& DamageE
 	{
 		return Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 	}
-	if (DamageCauser->IsA(ABotCharacter::StaticClass()))
-	{
+	// if (DamageCauser->IsA(ABotCharacter::StaticClass()))
+	// {
 		Client_TakeDamage(Damage, DamageCauser);
-	}
+	// }
 	return Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 }
 
@@ -416,7 +416,7 @@ void ALttnCharacter::CanInteract(const EInteractableType Type)
 		return;
 	}
 
-	ALttnController* C = GetLttnController();
+	const ALttnController* C = GetLttnController();
 
 	switch (Type)
 	{
@@ -691,7 +691,7 @@ void ALttnCharacter::Interact()
 		{
 			GetLttnController()->DoRevive(PlayerToRevive);
 		}
-		CanInteract(EInteractableType::NoInteraction);
+		CantInteract();
 		break;
 	case EInteractableType::NoInteraction:
 		break;

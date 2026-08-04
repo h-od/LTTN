@@ -43,7 +43,9 @@ public:
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input Mappings")
-	TArray<UInputMappingContext*> MappingContexts;
+	UInputMappingContext* MappingContext;
+	UPROPERTY(EditDefaultsOnly, Category = "Input Mappings")
+	UInputMappingContext* SpectateMappingContext;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UGameSummaryWidget> SummaryWidgetClass;
@@ -61,7 +63,7 @@ protected:
 
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	
+
 	void ShowStartGame();
 	void SetWave(const int32 Wave);
 	void UpdateWeaponProjectiles(int32 Count) const;
@@ -85,6 +87,8 @@ public:
 	void Server_PlayerDead();
 	void Server_PlayerDead_Implementation();
 	void StartSpectate(const int32 SpectateId);
+	void SpectatePrevious();
+	void SpectateNext();
 	bool HasRagDoll() const;
 	void DestroyRagdoll();
 	void GameOver(bool bIsMulti);
@@ -94,12 +98,16 @@ public:
 	void EnableSphere();
 	void DisableSphere();
 	void OpenDoor(int32 DoorNumber);
+
+private:
+	UFUNCTION(Client, Reliable)
+	void Client_OnPossess(bool bIsSpectate);
+	void Client_OnPossess_Implementation(bool bIsSpectate);
 	
 	UFUNCTION(Server, Reliable)
 	void Server_OpenDoor(int32 DoorNumber);
 	void Server_OpenDoor_Implementation(int32 DoorNumber);
 
-private:
 	void InitialiseHud(const FPlayerManager& PlayerManager);
 	UFUNCTION(Client, Reliable)
 	void Client_InitialiseHud(const FPlayerManager& PlayerManager);
@@ -112,6 +120,18 @@ private:
 	UFUNCTION(Client, Reliable)
 	void Client_ShowStartGame();
 	void Client_ShowStartGame_Implementation();
+	
+	UFUNCTION(Client, Reliable)
+	void Client_ShowSpectate();
+	void Client_ShowSpectate_Implementation();
+	
+	UFUNCTION(Server, Reliable)
+	void Server_SpectatePrevious();
+	void Server_SpectatePrevious_Implementation();
+	
+	UFUNCTION(Server, Reliable)
+	void Server_SpectateNext();
+	void Server_SpectateNext_Implementation();
 	
 	UFUNCTION(Client, Reliable)
 	void Client_SetWave(const int32 Wave);
