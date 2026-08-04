@@ -22,6 +22,7 @@ void ALttnGameMode::Spawn(ALttnController* LttnController, const bool bRespawn)
 	}
 	ALttnCharacter* LttnCharacter = GetWorld()->SpawnActor<ALttnCharacter>(PlayerCharacterClass, SpawnTransform, FActorSpawnParameters());
 
+	LttnCharacter->bIsDead = false;
 	if (LttnController->HasRagDoll())
 	{
 		LttnCharacter->SetPlayerInfo(LttnController->GetPlayerManager());
@@ -150,10 +151,9 @@ int32 ALttnGameMode::GetNextPawnToSpectate(int32 CurrentId) const
 	{
 		CurrentId = 0;
 	}
-	
+
 	if (PlayersAlive[CurrentId])
 	{
-
 		return CurrentId;
 	}
 	return GetNextPawnToSpectate(CurrentId);
@@ -168,7 +168,6 @@ int32 ALttnGameMode::GetPreviousPawnToSpectate(int32 CurrentId) const
 
 	if (PlayersAlive[CurrentId])
 	{
-
 		return CurrentId;
 	}
 	return GetPreviousPawnToSpectate(CurrentId);

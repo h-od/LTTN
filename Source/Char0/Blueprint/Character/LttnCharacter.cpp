@@ -45,7 +45,7 @@ ALttnCharacter::ALttnCharacter(const FObjectInitializer& ObjectInitializer) : Su
 	SprintSpeeds = FVector(700, 700, 700);
 	CrouchSpeeds = FVector(225, 200, 180);
 	bIsRagdolling = false;
-
+	bIsDead = false;
 
 	Camera = CreateDefaultSubobject<UGameplayCameraComponent>("Camera");
 	Camera->SetupAttachment(Cast<USceneComponent>(GetComponentByClass(USkeletalMeshComponent::StaticClass())), FName("Mesh"));
@@ -296,6 +296,9 @@ void ALttnCharacter::Server_SetRagDoll_Implementation()
 
 void ALttnCharacter::MC_SetRagDoll_Implementation()
 {
+	bIsDead = bRagdoll;
+	
+	//todo unragdoll?
 	if (UCharacterMovementComponent* CharacterComp = Cast<UCharacterMovementComponent>(GetMovementComponent()))
 	{
 		CharacterComp->StopMovementImmediately();

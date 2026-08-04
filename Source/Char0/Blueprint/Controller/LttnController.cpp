@@ -20,16 +20,16 @@ void ALttnController::BeginPlay()
 void ALttnController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-// 	if (IsLocalPlayerController())
-// 	{
-// 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-// 		{
-// 			for (const UInputMappingContext* Context : MappingContexts)
-// 			{
-// 				Subsystem->AddMappingContext(Context, 0);
-// 			}
-// 		}
-// 	}
+	// 	if (IsLocalPlayerController())
+	// 	{
+	// 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	// 		{
+	// 			for (const UInputMappingContext* Context : MappingContexts)
+	// 			{
+	// 				Subsystem->AddMappingContext(Context, 0);
+	// 			}
+	// 		}
+	// 	}
 }
 
 void ALttnController::OnPossess(APawn* PawnToPossess)
@@ -213,7 +213,7 @@ void ALttnController::DoRevive(const int32 IdToRevive)
 	Server_DoRevive(IdToRevive);
 }
 
-void ALttnController::EnableSphere()
+void ALttnController::EnableSphere() const
 {
 	if (ALttnCharacter* Char = LttnCharacter)
 	{
@@ -221,9 +221,12 @@ void ALttnController::EnableSphere()
 	}
 }
 
-void ALttnController::DisableSphere()
+void ALttnController::DisableSphere() const
 {
-	LttnCharacter->EnableCollisionSphere(false);
+	if (ALttnCharacter* Char = LttnCharacter)
+	{
+		Char->EnableCollisionSphere(false);
+	}
 }
 
 void ALttnController::OpenDoor(const int32 DoorNumber)
@@ -242,12 +245,11 @@ void ALttnController::Client_OnPossess_Implementation(const bool bIsSpectate)
 				Subsystem->RemoveMappingContext(MappingContext);
 				Subsystem->AddMappingContext(SpectateMappingContext, 0);
 			}
-			else 
+			else
 			{
 				Subsystem->AddMappingContext(MappingContext, 0);
 				Subsystem->RemoveMappingContext(SpectateMappingContext);
 			}
-			
 		}
 	}
 }
@@ -299,7 +301,7 @@ void ALttnController::Server_SpectatePrevious_Implementation()
 		EAttachmentRule::KeepRelative,
 		EAttachmentRule::KeepRelative,
 		true
-		);
+	);
 
 	CurrentlySpectating = GetLttnGameMode()->GetPreviousPawnToSpectate(CurrentlySpectating);
 	SpectatePawn->AttachToActor(GetLttnGameMode()->GetPlayerPawn(CurrentlySpectating), Rules, "head");

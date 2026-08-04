@@ -95,8 +95,8 @@ public:
 	FPlayerManager GetPlayerManager() const;
 
 	void DoRevive(int32 IdToRevive);
-	void EnableSphere();
-	void DisableSphere();
+	void EnableSphere() const;
+	void DisableSphere() const;
 	void OpenDoor(int32 DoorNumber);
 
 private:
