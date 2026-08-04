@@ -271,7 +271,7 @@ void ALttnGameMode::FindAndSetSpawnAreas()
 void ALttnGameMode::StartWave()
 {
 	const FWaveInfo Wave = GameplayManager.StartWave();
-	BotManager->ActivateBotsForWave(CurrentLevel, Wave);
+	BotManager->ActivateBotsForWave(Wave);
 	for (ALttnController* Player : Players)
 	{
 		Player->SetWave(Wave.Index);

@@ -59,7 +59,7 @@ protected:
 public:
 	ABotCharacter();
 
-	void Activate(int32 Level);
+	void Activate(int32 Wave);
 
 	virtual void BeginPlay() override;
 
@@ -78,10 +78,10 @@ public:
 
 private:
 	UFUNCTION(NetMulticast, Reliable)
-	void MC_Activate(int32 Level);
-	void MC_Activate_Implementation(int32 Level);
-	void Int_Activate(int32 Level);
-	void SetLevel(int32 CurrentLevel);
+	void MC_Activate(int32 Wave);
+	void MC_Activate_Implementation(int32 Wave);
+	void Int_Activate(int32 Wave);
+	void SetWave(int32 CurrentLevel);
 	void SetEnabled(bool bEnabled);
 	void SetHealth(float Value);
 

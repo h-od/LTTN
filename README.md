@@ -14,8 +14,8 @@ Built with Unreal Engine 5.7 (movement influenced heavily by epics GASP)
 Next:
 - resupply cost instead of cooldown? individual cooldowns?
 - UI - Pause and settings etc.
-- Respawn in place (animation of getting up?)
-  - self-revive?
+- Respawn in place 
+  - self-revive? -> use within 10 secs
 - optimise AI -> EQS?
 - level design / blockouts
   - power-ups *4

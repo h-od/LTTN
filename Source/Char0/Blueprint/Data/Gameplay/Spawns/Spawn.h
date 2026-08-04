@@ -6,24 +6,22 @@ USTRUCT()
 struct CHAR0_API FSpawn
 {
 	GENERATED_BODY()
-	
-	FSpawn() : Level(0), Index(0), WaveIndex(0)
+
+	FSpawn() : Index(0), Wave(0)
 	{
 	}
 
-	explicit FSpawn(const int32 Lev, const int32 I, const int32 WaveI) : Level(Lev), Index(I), WaveIndex(WaveI)
+	explicit FSpawn(const int32 I, const int32 WaveI) : Index(I), Wave(WaveI)
 	{
 	}
 
 	bool operator==(const FSpawn& Other) const
 	{
-		return Level == Other.Level && Index == Other.Index;
+		return Index == Other.Index;
 	}
-	
-	UPROPERTY()
-	int32 Level;
+
 	UPROPERTY()
 	int32 Index;
 	UPROPERTY()
-	int32 WaveIndex;
+	int32 Wave;
 };

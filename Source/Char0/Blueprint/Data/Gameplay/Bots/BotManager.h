@@ -83,10 +83,10 @@ public:
 
 	void SetBotClass(TSubclassOf<ABotCharacter> Class);
 	void SetSpawnAreas(const TMap<int32, FBotSpawns>& SpawnAreas);
-	void UpdateBotSpawnLocations(const TArray<int32>& ClosestToCenter);
+	void UpdateBotSpawnLocations(const TArray<int32>& SpawnLocations);
 	
 	UFUNCTION()
-	void ActivateBotsForWave(const int32 Level, FWaveInfo WaveInfo);
+	void ActivateBotsForWave(FWaveInfo WaveInfo);
 
 private:
 	void StartSpawnBots();

@@ -17,10 +17,10 @@ ABotCharacter::ABotCharacter()
 	bReplicates = true;
 }
 
-void ABotCharacter::Activate(const int32 Level)
+void ABotCharacter::Activate(const int32 Wave)
 {
-	MC_Activate(Level);
-	Int_Activate(Level);
+	MC_Activate(Wave);
+	Int_Activate(Wave);
 }
 
 void ABotCharacter::BeginPlay()
@@ -165,14 +165,14 @@ void ABotCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 	DOREPLIFETIME(ABotCharacter, HitDamage);
 }
 
-void ABotCharacter::MC_Activate_Implementation(const int32 Level)
+void ABotCharacter::MC_Activate_Implementation(const int32 Wave)
 {
-	Int_Activate(Level);
+	Int_Activate(Wave);
 }
 
-void ABotCharacter::Int_Activate(const int32 Level)
+void ABotCharacter::Int_Activate(const int32 Wave)
 {
-	SetLevel(Level);
+	SetWave(Wave);
 	if (HasAuthority())
 	{
 		SetEnabled(true);
@@ -183,7 +183,7 @@ void ABotCharacter::Int_Activate(const int32 Level)
 	}
 }
 
-void ABotCharacter::SetLevel(const int32 CurrentLevel)
+void ABotCharacter::SetWave(const int32 CurrentLevel)
 {
 	MaxHealth = (CurrentLevel + 1) * 2;
 	HitDamage = CurrentLevel + 1;

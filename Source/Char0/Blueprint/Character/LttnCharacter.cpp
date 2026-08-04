@@ -296,7 +296,7 @@ void ALttnCharacter::Server_SetRagDoll_Implementation()
 
 void ALttnCharacter::MC_SetRagDoll_Implementation()
 {
-	bIsDead = bRagdoll;
+	bIsDead = true;
 	
 	//todo unragdoll?
 	if (UCharacterMovementComponent* CharacterComp = Cast<UCharacterMovementComponent>(GetMovementComponent()))
