@@ -43,16 +43,12 @@ struct CHAR0_API FBotSpawns
 
 	TObjectPtr<ASpawnArea> GetNext()
 	{
-		TObjectPtr<ASpawnArea> SpawnArea = Spawn[LastIndex];
-		if (LastIndex == 3)
+		const int32 Index = LastIndex;
+		if (++LastIndex == Spawn.Num())
 		{
 			LastIndex = 0;
 		}
-		else
-		{
-			LastIndex = LastIndex+1;
-		}
 
-		return SpawnArea;
+		return Spawn[Index];
 	}
 };

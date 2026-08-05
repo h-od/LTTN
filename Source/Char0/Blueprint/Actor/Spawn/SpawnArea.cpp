@@ -36,7 +36,7 @@ FVector ASpawnArea::GetSpawnPoint_Int() const
 
 	FNavLocation Result;
 
-	if (const bool bSuccess = NavSys->GetRandomPointInNavigableRadius(Billboard->GetComponentLocation(), 250.0f, Result); !bSuccess)
+	if (const bool bSuccess = NavSys->GetRandomPointInNavigableRadius(Billboard->GetComponentLocation(), 200.0f, Result); !bSuccess)
 	{
 		return Billboard->GetComponentLocation();
 	}
