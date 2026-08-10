@@ -56,14 +56,16 @@ private:
 
 	UPROPERTY(Replicated)
 	int32 Id;
+	UPROPERTY()
+	bool bIsThirdPerson = true;
 
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	float AimStickSens = 50;
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	float AimMouseSens = 50;
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	float StickSens = 50;
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	float MouseSens = 50;
 
 	UPROPERTY(EditDefaultsOnly)
@@ -77,7 +79,7 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	UGameplayCameraComponent* Camera;
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	ECameraStyle CameraStyle;
 
 	UPROPERTY()
@@ -136,8 +138,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	UInputAction* InteractAction;
-	// UPROPERTY(EditDefaultsOnly, Category="Input")
-	// UInputAction* ToggleViewAction;
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	UInputAction* ToggleViewAction;
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	UInputAction* PauseAction;
 	UPROPERTY(EditDefaultsOnly, Category="Input")
@@ -240,6 +242,11 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void OverlapEnd(AActor* Overlapping);
 	
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetFirstPerson();
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetThirdPerson();
+	
 private:
 	UFUNCTION(Client, Reliable)
 	void Client_Possessed();
@@ -268,6 +275,7 @@ private:
 	void ZoomInPressed();
 	void ZoomOutPressed();
 	void ZoomPressed(const FInputActionValue& InputActionValue);
+	void ToggleView();
 	//Handle Inputs End
 
 	UFUNCTION()
@@ -300,6 +308,10 @@ private:
 	UFUNCTION(Server, Reliable)
 	void Server_InputStateUpdated(FPlayerInputState NewInputState);
 	void Server_InputStateUpdated_Implementation(FPlayerInputState NewInputState);
+
+	UFUNCTION(Server, Reliable)
+	void Server_CameraStyleUpdated(ECameraStyle NewCameraStyle);
+	void Server_CameraStyleUpdated_Implementation(ECameraStyle NewCameraStyle);
 
 	UFUNCTION()
 	FTraversalCheckInputs GetTraversalInputs() const;

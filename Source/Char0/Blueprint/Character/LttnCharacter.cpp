@@ -112,7 +112,7 @@ void ALttnCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Canceled, this, &ALttnCharacter::AimFinished);
 
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ALttnCharacter::Interact);
-		// EnhancedInputComponent->BindAction(ToggleViewAction, ETriggerEvent::Started, this, &ALttnCharacter::ToggleViewStarted);
+		EnhancedInputComponent->BindAction(ToggleViewAction, ETriggerEvent::Started, this, &ALttnCharacter::ToggleView);
 		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Started, this, &ALttnCharacter::Pause);
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &ALttnCharacter::FireStarted);
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Canceled, this, &ALttnCharacter::FireStopped);
@@ -130,6 +130,7 @@ void ALttnCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ALttnCharacter, InputState);
 	DOREPLIFETIME(ALttnCharacter, bIsDead);
+	DOREPLIFETIME(ALttnCharacter, CameraStyle);
 }
 
 void ALttnCharacter::OnJumped_Implementation()
@@ -170,7 +171,7 @@ float ALttnCharacter::TakeDamage(const float Damage, const FDamageEvent& DamageE
 	}
 	// if (DamageCauser->IsA(ABotCharacter::StaticClass()))
 	// {
-		Client_TakeDamage(Damage, DamageCauser);
+	Client_TakeDamage(Damage, DamageCauser);
 	// }
 	return Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 }
@@ -223,7 +224,6 @@ FProperties_Animation ALttnCharacter::GetProperties_Animation() const
 	{
 		MovementMode = EMovementType::OnGround;
 	}
-
 	return FProperties_Animation(
 		InputState,
 		MovementMode,
@@ -297,7 +297,7 @@ void ALttnCharacter::Server_SetRagDoll_Implementation()
 void ALttnCharacter::MC_SetRagDoll_Implementation()
 {
 	bIsDead = true;
-	
+
 	//todo unragdoll?
 	if (UCharacterMovementComponent* CharacterComp = Cast<UCharacterMovementComponent>(GetMovementComponent()))
 	{
@@ -732,7 +732,11 @@ void ALttnCharacter::ZoomInPressed()
 {
 	switch (CameraStyle)
 	{
+	case ECameraStyle::FirstP:
 	case ECameraStyle::Close:
+		CameraStyle = ECameraStyle::FirstP;
+		// Camera->bSetControlRotationWhenViewTarget = true;
+		break;
 	case ECameraStyle::Medium:
 		CameraStyle = ECameraStyle::Close;
 		break;
@@ -744,12 +748,16 @@ void ALttnCharacter::ZoomInPressed()
 		break;
 	}
 	UGameplayStatics::PlaySound2D(GetWorld(), CameraChangeSound);
+	Server_CameraStyleUpdated(CameraStyle);
 }
 
 void ALttnCharacter::ZoomOutPressed()
 {
 	switch (CameraStyle)
 	{
+	case ECameraStyle::FirstP:
+		CameraStyle = ECameraStyle::Close;
+		break;
 	case ECameraStyle::Close:
 		CameraStyle = ECameraStyle::Medium;
 		break;
@@ -762,6 +770,8 @@ void ALttnCharacter::ZoomOutPressed()
 		break;
 	}
 	UGameplayStatics::PlaySound2D(GetWorld(), CameraChangeSound);
+	Server_CameraStyleUpdated(CameraStyle);
+		// Camera->bSetControlRotationWhenViewTarget = false;
 }
 
 void ALttnCharacter::ZoomPressed(const FInputActionValue& InputActionValue)
@@ -776,6 +786,20 @@ void ALttnCharacter::ZoomPressed(const FInputActionValue& InputActionValue)
 	}
 }
 
+void ALttnCharacter::ToggleView()
+{
+	if (bIsThirdPerson)
+	{
+		SetFirstPerson();
+		bIsThirdPerson = false;
+	}
+	else
+	{
+		SetThirdPerson();
+		bIsThirdPerson = true;
+	}
+}
+
 void ALttnCharacter::PreMovementTick()
 {
 	UpdateRotation_PreTick();
@@ -785,8 +809,11 @@ void ALttnCharacter::PreMovementTick()
 void ALttnCharacter::UpdateRotation_PreTick() const
 {
 	UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
-	MovementComponent->bUseControllerDesiredRotation = InputState.bWantsToAim;
-	MovementComponent->bOrientRotationToMovement = !InputState.bWantsToAim;
+	
+	MovementComponent->bUseControllerDesiredRotation = InputState.bWantsToAim or CameraStyle == ECameraStyle::FirstP;
+	MovementComponent->bOrientRotationToMovement = !InputState.bWantsToAim and CameraStyle != ECameraStyle::FirstP;
+	
+	// UKismetSystemLibrary::PrintString(GetWorld(), Busecontrollerdesiredrotation, true, false, FLinearColor::White, 0.1f);
 }
 
 void ALttnCharacter::UpdateMovement_PreTick()
@@ -992,6 +1019,11 @@ void ALttnCharacter::OnMovementUpdated(float DeltaSeconds, FVector OldLocation, 
 void ALttnCharacter::Server_InputStateUpdated_Implementation(const FPlayerInputState NewInputState)
 {
 	InputState = NewInputState;
+}
+
+void ALttnCharacter::Server_CameraStyleUpdated_Implementation(const ECameraStyle NewCameraStyle)
+{
+	CameraStyle =NewCameraStyle;
 }
 
 FTraversalCheckInputs ALttnCharacter::GetTraversalInputs() const
