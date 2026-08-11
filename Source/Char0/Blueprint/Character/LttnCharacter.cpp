@@ -112,7 +112,6 @@ void ALttnCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Canceled, this, &ALttnCharacter::AimFinished);
 
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ALttnCharacter::Interact);
-		EnhancedInputComponent->BindAction(ToggleViewAction, ETriggerEvent::Started, this, &ALttnCharacter::ToggleView);
 		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Started, this, &ALttnCharacter::Pause);
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &ALttnCharacter::FireStarted);
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Canceled, this, &ALttnCharacter::FireStopped);
@@ -631,12 +630,34 @@ void ALttnCharacter::AimStarted()
 {
 	InputState.bWantsToAim = true;
 	Server_InputStateUpdated(InputState);
+	Server_AimStarted();
+}
+
+void ALttnCharacter::Server_AimStarted_Implementation()
+{
+	MC_AimStarted();
+}
+
+void ALttnCharacter::MC_AimStarted_Implementation()
+{
+	PlayAnimMontage(AimMontage);
 }
 
 void ALttnCharacter::AimFinished()
 {
 	InputState.bWantsToAim = false;
 	Server_InputStateUpdated(InputState);
+	Server_AimFinished();
+}
+
+void ALttnCharacter::Server_AimFinished_Implementation()
+{
+	MC_AimFinished();
+}
+
+void ALttnCharacter::MC_AimFinished_Implementation()
+{
+	StopAnimMontage(AimMontage);
 }
 
 void ALttnCharacter::Interact()
@@ -771,7 +792,7 @@ void ALttnCharacter::ZoomOutPressed()
 	}
 	UGameplayStatics::PlaySound2D(GetWorld(), CameraChangeSound);
 	Server_CameraStyleUpdated(CameraStyle);
-		// Camera->bSetControlRotationWhenViewTarget = false;
+	// Camera->bSetControlRotationWhenViewTarget = false;
 }
 
 void ALttnCharacter::ZoomPressed(const FInputActionValue& InputActionValue)
@@ -786,20 +807,6 @@ void ALttnCharacter::ZoomPressed(const FInputActionValue& InputActionValue)
 	}
 }
 
-void ALttnCharacter::ToggleView()
-{
-	if (bIsThirdPerson)
-	{
-		SetFirstPerson();
-		bIsThirdPerson = false;
-	}
-	else
-	{
-		SetThirdPerson();
-		bIsThirdPerson = true;
-	}
-}
-
 void ALttnCharacter::PreMovementTick()
 {
 	UpdateRotation_PreTick();
@@ -809,10 +816,10 @@ void ALttnCharacter::PreMovementTick()
 void ALttnCharacter::UpdateRotation_PreTick() const
 {
 	UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
-	
+
 	MovementComponent->bUseControllerDesiredRotation = InputState.bWantsToAim or CameraStyle == ECameraStyle::FirstP;
 	MovementComponent->bOrientRotationToMovement = !InputState.bWantsToAim and CameraStyle != ECameraStyle::FirstP;
-	
+
 	// UKismetSystemLibrary::PrintString(GetWorld(), Busecontrollerdesiredrotation, true, false, FLinearColor::White, 0.1f);
 }
 
@@ -1023,7 +1030,7 @@ void ALttnCharacter::Server_InputStateUpdated_Implementation(const FPlayerInputS
 
 void ALttnCharacter::Server_CameraStyleUpdated_Implementation(const ECameraStyle NewCameraStyle)
 {
-	CameraStyle =NewCameraStyle;
+	CameraStyle = NewCameraStyle;
 }
 
 FTraversalCheckInputs ALttnCharacter::GetTraversalInputs() const

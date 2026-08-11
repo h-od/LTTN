@@ -122,6 +122,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Sound")
 	FGameplayTag JumpEventGameplayTag;
 
+	// Animations
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	UAnimMontage* AimMontage;
+	
 	// InputActions
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	UInputAction* MoveAction;
@@ -138,8 +142,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	UInputAction* InteractAction;
-	UPROPERTY(EditDefaultsOnly, Category="Input")
-	UInputAction* ToggleViewAction;
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	UInputAction* PauseAction;
 	UPROPERTY(EditDefaultsOnly, Category="Input")
@@ -242,11 +244,6 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void OverlapEnd(AActor* Overlapping);
 	
-	UFUNCTION(BlueprintImplementableEvent)
-	void SetFirstPerson();
-	UFUNCTION(BlueprintImplementableEvent)
-	void SetThirdPerson();
-	
 private:
 	UFUNCTION(Client, Reliable)
 	void Client_Possessed();
@@ -266,7 +263,22 @@ private:
 	void JumpTriggered();
 	void JumpStarted();
 	void AimStarted();
+	
+	UFUNCTION(Server, Reliable)
+	void Server_AimStarted();
+	void Server_AimStarted_Implementation();
+	UFUNCTION(NetMulticast, Reliable)
+	void MC_AimStarted();
+	void MC_AimStarted_Implementation();
+	
 	void AimFinished();
+	UFUNCTION(Server, Reliable)
+	void Server_AimFinished();
+	void Server_AimFinished_Implementation();
+	UFUNCTION(NetMulticast, Reliable)
+	void MC_AimFinished();
+	void MC_AimFinished_Implementation();
+	
 	void Interact();
 	void Pause();
 	void FireStarted();
@@ -275,7 +287,6 @@ private:
 	void ZoomInPressed();
 	void ZoomOutPressed();
 	void ZoomPressed(const FInputActionValue& InputActionValue);
-	void ToggleView();
 	//Handle Inputs End
 
 	UFUNCTION()
