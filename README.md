@@ -12,14 +12,20 @@ Built with Unreal Engine 5.7 (movement influenced heavily by epics GASP)
 - 
 
 Next:
-- resupply cost instead of cooldown? individual cooldowns?
+- resupply cost instead of cooldown
+- powerups (buying 2 of the same one = 60s?)
+  - 30s insta-kill 1500 (double damage dealt?) is 30s too long? maybe 10?
+  - 30s invincible 1500 (half damage taken?)
+  - 30s both 2500
+  - self-revive -> use within 10 secs
+- more animations: bots ragdoll, revive, self revive 
 - UI - Pause and settings etc.
-- Respawn in place 
-  - self-revive? -> use within 10 secs
+- pooled points?
+  - everyone earns points into a pool, but everyone gets to spend that amount of points
 - optimise AI -> EQS?
-- level design / blockouts
-  - power-ups *4
+- level design
 - assets and stuff
 - 
 - health/ damage component-> shared between ai and player
+  - inc death + ragdoll etc
 - 

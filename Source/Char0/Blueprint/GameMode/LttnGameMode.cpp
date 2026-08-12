@@ -12,15 +12,17 @@
 void ALttnGameMode::Spawn(ALttnController* LttnController, const bool bRespawn)
 {
 	FTransform SpawnTransform;
+	FActorSpawnParameters SpawnParameters;
 	if (bRespawn)
 	{
-		SpawnTransform = PlayerReSpawn[LttnController->Id]->GetTransform();
+		SpawnTransform = LttnController->GetPawn()->GetTransform();
+		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	}
 	else
 	{
 		SpawnTransform = PlayerSpawn[LttnController->Id]->GetTransform();
 	}
-	ALttnCharacter* LttnCharacter = GetWorld()->SpawnActor<ALttnCharacter>(PlayerCharacterClass, SpawnTransform, FActorSpawnParameters());
+	ALttnCharacter* LttnCharacter = GetWorld()->SpawnActor<ALttnCharacter>(PlayerCharacterClass, SpawnTransform, SpawnParameters);
 
 	LttnCharacter->bIsDead = false;
 	if (LttnController->HasRagDoll())
