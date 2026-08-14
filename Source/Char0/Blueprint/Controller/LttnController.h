@@ -98,6 +98,7 @@ public:
 	void EnableSphere() const;
 	void DisableSphere() const;
 	void OpenDoor(int32 DoorNumber);
+	void DoPause();
 
 private:
 	UFUNCTION(Client, Reliable)

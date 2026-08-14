@@ -6,7 +6,7 @@
 #include "Char0/Blueprint/GameMode/LttnGameMode.h"
 #include "Char0/Blueprint/State/Game/LttnGameState.h"
 #include "Char0/Blueprint/UI/HUD/LttnHud.h"
-#include "Char0/Blueprint/UI/Widget/GameSummaryWidget.h"
+#include "Char0/Blueprint/UI/Widget/Gameplay/GameSummaryWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
@@ -232,6 +232,11 @@ void ALttnController::DisableSphere() const
 void ALttnController::OpenDoor(const int32 DoorNumber)
 {
 	Server_OpenDoor(DoorNumber);
+}
+
+void ALttnController::DoPause()
+{
+	//TODO if its single player then pause proper, if not then inform the UI
 }
 
 void ALttnController::Client_OnPossess_Implementation(const bool bIsSpectate)

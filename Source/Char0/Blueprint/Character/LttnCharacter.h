@@ -123,7 +123,7 @@ protected:
 	FGameplayTag JumpEventGameplayTag;
 
 	// Animations
-	UPROPERTY(EditDefaultsOnly, Category="Input")
+	UPROPERTY(EditDefaultsOnly, Category="Animation")
 	UAnimMontage* AimMontage;
 	
 	// InputActions

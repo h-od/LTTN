@@ -732,6 +732,12 @@ void ALttnCharacter::Interact()
 
 void ALttnCharacter::Pause()
 {
+	GetPauseWidget()->AddToviewPort();
+
+	if (ALttnController* LttnController = GetLttnController())
+	{
+		LttnController->DoPause();
+	}
 }
 
 void ALttnCharacter::FireStarted()

@@ -5,8 +5,8 @@
 #include "Blueprint/UserWidget.h"
 #include "Char0/Blueprint/Data/Player/PlayerManager.h"
 #include "Char0/Blueprint/UI/Widget/FadeWidget.h"
-#include "Char0/Blueprint/UI/Widget/OverlayWidget.h"
-#include "Char0/Blueprint/UI/Widget/SpectatingWidget.h"
+#include "Char0/Blueprint/UI/Widget/Gameplay/OverlayWidget.h"
+#include "Char0/Blueprint/UI/Widget/Gameplay/SpectatingWidget.h"
 
 void ALttnHud::BeginPlay()
 {
