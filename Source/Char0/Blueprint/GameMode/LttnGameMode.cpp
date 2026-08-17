@@ -314,3 +314,43 @@ bool ALttnGameMode::AllDead()
 	}
 	return true;
 }
+
+bool ALttnGameMode::HasActivePlayer() const
+{
+	for (const TTuple<int, bool> Player : PlayersAlive)
+	{
+		if (Player.Value)
+		{
+			return true;
+		}
+	}
+	return !PlayersAlive.IsEmpty();
+}
+
+FVector ALttnGameMode::ClosestPlayer(const FVector BotLocation)
+{
+	TArray<FVector> ActorsToCheck;
+
+	for (const TTuple Player : PlayersAlive)
+	{
+		if (Player.Value)
+		{
+			ActorsToCheck.Add(Players[Player.Key]->GetPawn()->GetActorLocation());
+		}
+	}
+	
+	
+	float Distance = TNumericLimits<float>::Max();
+	FVector Location;
+	
+	for (FVector ToCheck : ActorsToCheck)
+	{
+		if (const float DistanceFromActor = (BotLocation - ToCheck).SizeSquared(); DistanceFromActor < Distance)
+		{
+			Distance = DistanceFromActor;
+			Location = ToCheck;
+		}
+	}
+	
+	return Location;
+}

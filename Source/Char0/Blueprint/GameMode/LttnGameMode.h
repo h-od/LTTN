@@ -93,4 +93,12 @@ private:
 	void Server_UpdateBotSpawnLocation_Implementation();
 
 	bool AllDead();
+	
+	//for Bots
+public:
+	UFUNCTION(BlueprintPure)
+	bool HasActivePlayer() const;
+	
+	UFUNCTION(BlueprintCallable)
+	FVector ClosestPlayer(FVector BotLocation);
 };
