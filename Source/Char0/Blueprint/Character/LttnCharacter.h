@@ -11,6 +11,7 @@
 #include "GameFramework/Character.h"
 #include "LttnCharacter.generated.h"
 
+class UPauseWidget;
 class ALttnController;
 class UGameplayComponent;
 class ULttnMovementComponent;
@@ -109,9 +110,15 @@ private:
 	EInteractableType Interactable = EInteractableType::NoInteraction;
 	UPROPERTY()
 	int32 PlayerToRevive;
+	
+	UPROPERTY()
+	UPauseWidget* PauseWidget;
 
 protected:
 	// Config
+	UPROPERTY(EditDefaultsOnly, Category="Widget")
+	TSubclassOf<UPauseWidget> PauseWidgetClass;
+	
 	UPROPERTY(EditDefaultsOnly, Category="Movement")
 	UCurveFloat* StrafeSpeedMapCurve;
 
@@ -333,7 +340,8 @@ private:
 	UFUNCTION(Client, Reliable)
 	void Client_SetMaxHealth();
 	void Client_SetMaxHealth_Implementation();
-	
+
+	UPauseWidget* GetPauseWidget();
 	UFUNCTION()
 	ALttnController* GetLttnController();
 };

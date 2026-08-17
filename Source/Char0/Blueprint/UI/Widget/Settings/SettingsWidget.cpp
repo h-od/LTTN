@@ -5,7 +5,7 @@
 
 inline void USettingsWidget::Back() const
 {
-	Parent->ShowStart();
+	Parent->ShowStartWidget();
 }
 
 inline void USettingsWidget::SetParent(UMainWidget* MainWidget)

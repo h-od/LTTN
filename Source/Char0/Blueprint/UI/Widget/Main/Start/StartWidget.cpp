@@ -5,12 +5,22 @@
 
 void UStartWidget::Solo() const
 {
-	Parent->StartSolo();
+	Parent->StartGame();
+}
+
+inline void UStartWidget::ShowHost() const
+{
+	Parent->ShowHostWidget();
+}
+
+inline void UStartWidget::ShowJoin() const
+{
+	Parent->ShowJoinWidget();
 }
 
 inline void UStartWidget::ShowSettings() const
 {
-	Parent->ShowSettings();
+	Parent->ShowSettingsWidget();
 }
 
 inline void UStartWidget::SetParent(UMainWidget* MainWidget)

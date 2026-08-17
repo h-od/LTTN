@@ -10,8 +10,11 @@ AStartController::AStartController()
 void AStartController::BeginPlay()
 {
 	Super::BeginPlay();
-	CreateWidget(GetWorld(), StartWidgetClass)->AddToViewport();
-	SetInputMode(FInputModeGameAndUI());
+	if (IsLocalController())
+	{
+		CreateWidget(GetWorld(), StartWidgetClass)->AddToViewport();
+		SetInputMode(FInputModeGameAndUI());
+	}
 }
 
 void AStartController::BeginDestroy()

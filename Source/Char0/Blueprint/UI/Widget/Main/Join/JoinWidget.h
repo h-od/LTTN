@@ -15,4 +15,10 @@ class CHAR0_API UJoinWidget : public UUserWidget
 	
 public:
 	void SetParent(UMainWidget* MainWidget);
+	
+protected:
+	UFUNCTION(BlueprintCallable)
+	void Start() const;
+	UFUNCTION(BlueprintCallable)
+	void Back() const;
 };

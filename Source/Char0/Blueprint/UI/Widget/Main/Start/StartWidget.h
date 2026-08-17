@@ -18,6 +18,10 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void Solo() const;
 	UFUNCTION(BlueprintCallable)
+	void ShowHost() const;
+	UFUNCTION(BlueprintCallable)
+	void ShowJoin() const;
+	UFUNCTION(BlueprintCallable)
 	void ShowSettings() const;
 
 public:

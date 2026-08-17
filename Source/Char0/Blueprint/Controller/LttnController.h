@@ -64,6 +64,12 @@ protected:
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	// UFUNCTION(BlueprintCallable)
+	// void JoinGame();
+	// UFUNCTION(Server, Reliable)
+	// void Server_JoinGame();
+	// void Server_JoinGame_Implementation();
+	
 	void ShowStartGame();
 	void SetWave(const int32 Wave);
 	void UpdateWeaponProjectiles(int32 Count) const;
@@ -98,7 +104,7 @@ public:
 	void EnableSphere() const;
 	void DisableSphere() const;
 	void OpenDoor(int32 DoorNumber);
-	void DoPause();
+	bool DoPause();
 
 private:
 	UFUNCTION(Client, Reliable)

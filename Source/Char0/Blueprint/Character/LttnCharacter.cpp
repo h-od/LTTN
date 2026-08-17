@@ -4,6 +4,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "KismetAnimationLibrary.h"
+#include "Blueprint/UserWidget.h"
 #include "Bot/BotCharacter.h"
 #include "Char0/Blueprint/Controller/LttnController.h"
 #include "Char0/Blueprint/Data/Movement/Gait.h"
@@ -18,6 +19,7 @@
 #include "Char0/Blueprint/Data/Movement/Properties_Animation.h"
 #include "Char0/Blueprint/Data/Sound/SoundParams.h"
 #include "Char0/Blueprint/Data/Sound/SoundSide.h"
+#include "Char0/Blueprint/UI/Widget/Pause/PauseWidget.h"
 #include "Component/Gameplay/GameplayComponent.h"
 #include "Component/Movement/LttnMovementComponent.h"
 #include "Component/Sound/SoundEventsComponent.h"
@@ -732,11 +734,11 @@ void ALttnCharacter::Interact()
 
 void ALttnCharacter::Pause()
 {
-	GetPauseWidget()->AddToviewPort();
+	GetPauseWidget()->AddToViewport();
 
-	if (ALttnController* LttnController = GetLttnController())
+	if (ALttnController* Con = GetLttnController())
 	{
-		LttnController->DoPause();
+		Con->DoPause();
 	}
 }
 
@@ -1083,6 +1085,15 @@ void ALttnCharacter::Client_SetMaxHealth_Implementation()
 	{
 		Con->SetPlayerHealth(1.0f);
 	}
+}
+
+UPauseWidget* ALttnCharacter::GetPauseWidget()
+{
+	if (!PauseWidget)
+	{
+		PauseWidget = Cast<UPauseWidget>(CreateWidget(GetWorld(), PauseWidgetClass));
+	}
+	return PauseWidget;
 }
 
 ALttnController* ALttnCharacter::GetLttnController()

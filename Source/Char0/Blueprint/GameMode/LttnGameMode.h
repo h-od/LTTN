@@ -48,9 +48,6 @@ class CHAR0_API ALttnGameMode : public AGameMode
 	
 	UPROPERTY()
 	TArray<ASpawnArea*> PlayerSpawn;//TODO TArray<FVector>
-	
-	UPROPERTY()
-	TArray<ASpawnArea*> PlayerReSpawn; //TODO TArray<FVector>
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
@@ -83,11 +80,10 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
 	virtual void OnPostLogin(AController* NewPlayer) override;
-	void FindAndSetDoors();
 
 private:
+	void FindAndSetDoors();
 	void FindAndSetSpawnAreas();
 
 	void StartWave();

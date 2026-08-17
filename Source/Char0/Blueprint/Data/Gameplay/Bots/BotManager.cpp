@@ -36,6 +36,11 @@ void UBotManager::ActivateBotsForWave(const FWaveInfo WaveInfo)
 	StartSpawnBots();
 }
 
+bool UBotManager::HasSpawnAreas()
+{
+	return !Spawns.IsEmpty();
+}
+
 void UBotManager::StartSpawnBots()
 {
 	if (const UWorld* World = GetWorld())

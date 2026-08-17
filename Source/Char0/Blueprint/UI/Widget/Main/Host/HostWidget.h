@@ -15,4 +15,10 @@ class CHAR0_API UHostWidget : public UUserWidget
 
 public:
 	void SetParent(UMainWidget* MainWidget);
+	
+protected:
+	UFUNCTION(BlueprintCallable)
+	void StartGame() const;
+	UFUNCTION(BlueprintCallable)
+	void Back() const;
 };

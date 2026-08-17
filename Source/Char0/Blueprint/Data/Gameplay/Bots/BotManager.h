@@ -87,6 +87,7 @@ public:
 	
 	UFUNCTION()
 	void ActivateBotsForWave(FWaveInfo WaveInfo);
+	bool HasSpawnAreas();
 
 private:
 	void StartSpawnBots();

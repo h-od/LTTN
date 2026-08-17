@@ -16,15 +16,15 @@ class CHAR0_API UMainWidget : public UUserWidget
 
 public:
 	UFUNCTION(BlueprintImplementableEvent)
-	void StartSolo();
+	void StartGame();
 	UFUNCTION(BlueprintImplementableEvent)
-	void ShowSettings();
+	void ShowSettingsWidget();
 	UFUNCTION(BlueprintImplementableEvent)
-	void ShowHost();
+	void ShowHostWidget();
 	UFUNCTION(BlueprintImplementableEvent)
-	void ShowJoin();
+	void ShowJoinWidget();
 	UFUNCTION(BlueprintImplementableEvent)
-	void ShowStart();
+	void ShowStartWidget();
 
 protected:
 	UFUNCTION(BlueprintCallable)

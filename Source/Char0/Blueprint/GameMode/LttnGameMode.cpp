@@ -70,8 +70,9 @@ void ALttnGameMode::StartGame()
 
 	for (const auto Player : Players)
 	{
-		//TODO do we need to rez?
+		//TODO we need to rez
 		PlayersAlive[Player->Id] = true;
+		UpdatePlayerLocation(Player->Id, 0);
 	}
 }
 
@@ -217,12 +218,16 @@ void ALttnGameMode::OnPostLogin(AController* NewPlayer)
 	UpdatePlayerLocation(PlayerId, 0); // Spawn Location
 
 
-	FindAndSetSpawnAreas();
+	FindAndSetSpawnAreas(); //todo needed here or is begin play enough?
 	Spawn(LttnController, false);
 }
 
 void ALttnGameMode::FindAndSetDoors()
 {
+	if (!Doors.IsEmpty())
+	{
+		return;
+	}
 	TArray<AActor*> FoundDoorActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADoor::StaticClass(), FoundDoorActors);
 	for (AActor* Actor : FoundDoorActors)
@@ -238,6 +243,10 @@ void ALttnGameMode::FindAndSetDoors()
 
 void ALttnGameMode::FindAndSetSpawnAreas()
 {
+	if (BotManager->HasSpawnAreas())
+	{
+		return;
+	}
 	TArray<AActor*> FoundSpawnAreaActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASpawnArea::StaticClass(), FoundSpawnAreaActors);
 
@@ -248,7 +257,6 @@ void ALttnGameMode::FindAndSetSpawnAreas()
 		{
 			if (ASpawnArea* SpawnArea = Cast<ASpawnArea>(Actor); SpawnArea->bPlayer)
 			{
-				PlayerReSpawn.Add(SpawnArea); //TODO remove respawn and respawn in place 
 				PlayerSpawn.Add(SpawnArea);
 			}
 			else

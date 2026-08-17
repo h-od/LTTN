@@ -39,7 +39,11 @@ void ALttnController::OnPossess(APawn* PawnToPossess)
 	LttnCharacter = Cast<ALttnCharacter>(PawnToPossess);
 	if (LttnCharacter)
 	{
-		InitialiseHud(LttnCharacter->GetPlayerManager());
+		InitialiseHud(LttnCharacter->GetPlayerManager()); //TODO move this to Client_OnPossess
+	}
+	if (IsPaused())
+	{
+		SetPause(false);
 	}
 	Client_OnPossess(PawnToPossess->IsA(ASpectateCharacter::StaticClass()));
 }
@@ -49,6 +53,16 @@ void ALttnController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ALttnController, Id);
 }
+
+// void ALttnController::JoinGame()
+// {
+// 	Server_JoinGame();
+// }
+
+// void ALttnController::Server_JoinGame_Implementation()
+// {
+// 	GetLttnGameMode()->PlayerJoined(this);
+// }
 
 void ALttnController::ShowStartGame()
 {
@@ -234,9 +248,17 @@ void ALttnController::OpenDoor(const int32 DoorNumber)
 	Server_OpenDoor(DoorNumber);
 }
 
-void ALttnController::DoPause()
+bool ALttnController::DoPause()
 {
 	//TODO if its single player then pause proper, if not then inform the UI
+	if (GameState and GameState->PlayerArray.Num() == 1)
+	{
+		// Pause();
+		SetPause(true);
+		return true;
+	}
+
+	return false;
 }
 
 void ALttnController::Client_OnPossess_Implementation(const bool bIsSpectate)
