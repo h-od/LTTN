@@ -11,6 +11,7 @@
 
 /Content/Characters/*
 /Content/Assets/*
+/Content/__ExternalActors__/Assets/FromFab/*
 
 #################################
 # Visual Studio Generated Files #
