@@ -3,12 +3,12 @@
 #include "CoreMinimal.h"
 #include "Char0/Blueprint/UI/Widget/Main/MainWidget.h"
 
-inline void USettingsWidget::Back() const
+void USettingsWidget::Back() const
 {
 	Parent->ShowStartWidget();
 }
 
-inline void USettingsWidget::SetParent(UMainWidget* MainWidget)
+void USettingsWidget::SetParent(UMainWidget* MainWidget)
 {
 	Parent = MainWidget;
 }

@@ -12,7 +12,7 @@ void UHostWidget::StartGame() const
 	Parent->StartGame();
 }
 
-inline void UHostWidget::Back() const
+void UHostWidget::Back() const
 {
 	Parent->ShowStartWidget();
 }

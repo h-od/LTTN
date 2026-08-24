@@ -8,22 +8,22 @@ void UStartWidget::Solo() const
 	Parent->StartGame();
 }
 
-inline void UStartWidget::ShowHost() const
+void UStartWidget::ShowHost() const
 {
 	Parent->ShowHostWidget();
 }
 
-inline void UStartWidget::ShowJoin() const
+void UStartWidget::ShowJoin() const
 {
 	Parent->ShowJoinWidget();
 }
 
-inline void UStartWidget::ShowSettings() const
+void UStartWidget::ShowSettings() const
 {
 	Parent->ShowSettingsWidget();
 }
 
-inline void UStartWidget::SetParent(UMainWidget* MainWidget)
+void UStartWidget::SetParent(UMainWidget* MainWidget)
 {
 	Parent = MainWidget;
 }
