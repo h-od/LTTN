@@ -14,7 +14,6 @@ enum class EInteractableType : uint8
 	UpgradeHealth UMETA(DisplayName = "UpgradeHealth"),
 	UpgradeStamina UMETA(DisplayName = "UpgradeStamina"),
 	UpgradeReloadSpeed UMETA(DisplayName = "UpgradeReloadSpeed"),
-	UpgradeProjectileCapacity UMETA(DisplayName = "UpgradeProjectileCapacity"),
 	
 	Door UMETA(DisplayName = "Door"),
 	Revive UMETA(DisplayName = "Revive"),

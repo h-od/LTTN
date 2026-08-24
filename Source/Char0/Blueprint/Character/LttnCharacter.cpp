@@ -403,11 +403,6 @@ void ALttnCharacter::ShowMaxWeaponProjectiles(const int32 MaxProjectiles) const
 	LttnController->ShowMaxWeaponProjectiles(MaxProjectiles);
 }
 
-void ALttnCharacter::ShowResupplyCooldown(const float TimerRemaining) const
-{
-	LttnController->ShowResupplyCooldown(TimerRemaining);
-}
-
 void ALttnCharacter::ShowPlayerProjectiles(const int32 Projectiles) const
 {
 	LttnController->ShowPlayerProjectiles(Projectiles);
@@ -421,48 +416,47 @@ void ALttnCharacter::CanInteract(const EInteractableType Type)
 	}
 
 	const ALttnController* C = GetLttnController();
-
+	int32 Cost = -1;
+	
 	switch (Type)
 	{
 	case EInteractableType::StartGame:
 		Interactable = Type;
 		C->ShowCanInteract(true);
-		break;
+		return;;
 	case EInteractableType::Resupply:
 		Interactable = Type;
-		C->ShowCanInteract(GameplayComponent->CanResupply());
+		Cost = GameplayComponent->CanResupply();
 		break;
 	case EInteractableType::UpgradeWeapon:
 		Interactable = Type;
-		C->ShowCanInteract(GameplayComponent->CanUpgradeWeapon());
+		Cost = GameplayComponent->CanUpgradeWeapon();
 		break;
 	case EInteractableType::UpgradeHealth:
 		Interactable = Type;
-		C->ShowCanInteract(GameplayComponent->CanUpgradeHealth());
+		Cost = GameplayComponent->CanUpgradeHealth();
 		break;
 	case EInteractableType::UpgradeStamina:
 		Interactable = Type;
-		C->ShowCanInteract(GameplayComponent->CanUpgradeStamina());
+		Cost = GameplayComponent->CanUpgradeStamina();
 		break;
 	case EInteractableType::UpgradeReloadSpeed:
 		Interactable = Type;
-		C->ShowCanInteract(GameplayComponent->CanUpgradeReloadSpeed());
-		break;
-	case EInteractableType::UpgradeProjectileCapacity:
-		Interactable = Type;
-		C->ShowCanInteract(GameplayComponent->CanUpgradeProjectileCapacity());
+		Cost = GameplayComponent->CanUpgradeReloadSpeed();
 		break;
 	case EInteractableType::Revive:
 		Interactable = Type;
-		C->ShowCanInteract(true);
-		break;
+		C->ShowCanInteract(true); 
+		return;
 	case EInteractableType::Door: //todo handled differently
-		break;
+		return;;
 	case EInteractableType::NoInteraction:
 		Interactable = Type;
 		C->ShowCanInteract(false);
-		break;
+		return;
 	}
+	
+	C->ShowCanInteract(Cost > 0, Cost);
 }
 
 void ALttnCharacter::CantInteract()
@@ -674,7 +668,10 @@ void ALttnCharacter::Interact()
 		CantInteract();
 		break;
 	case EInteractableType::Resupply:
-		GameplayComponent->Resupply();
+		if (GameplayComponent->CanResupply())
+		{
+			GameplayComponent->Resupply();
+		}
 		CanInteract(Interactable);
 		break;
 	case EInteractableType::UpgradeWeapon:
@@ -702,13 +699,6 @@ void ALttnCharacter::Interact()
 		if (GameplayComponent->CanUpgradeReloadSpeed())
 		{
 			GameplayComponent->UpgradeReloadSpeed();
-		}
-		CanInteract(Interactable);
-		break;
-	case EInteractableType::UpgradeProjectileCapacity:
-		if (GameplayComponent->CanUpgradeProjectileCapacity())
-		{
-			GameplayComponent->UpgradeProjectileCapacity();
 		}
 		CanInteract(Interactable);
 		break;

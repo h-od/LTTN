@@ -47,8 +47,6 @@ class CHAR0_API UGameplayComponent : public UActorComponent
 	UPROPERTY()
 	FTimerHandle ReloadTimerHandle;
 	UPROPERTY()
-	FTimerHandle ResupplyTimerHandle;
-	UPROPERTY()
 	FTimerHandle FireRateTimerHandle;
 
 protected:
@@ -116,21 +114,21 @@ public:
 	void StopSprinting();
 	
 	//upgrade
-	bool CanUpgradeHealth() const;
-	bool CanUpgradeStamina() const;
-	bool CanUpgradeReloadSpeed() const;
-	bool CanUpgradeWeapon() const;
-	bool CanUpgradeProjectileCapacity() const;
+	int32 CanUpgradeHealth() const;
+	int32 CanUpgradeStamina() const;
+	int32 CanUpgradeReloadSpeed() const;
+	int32 CanUpgradeWeapon() const;
 	
 	void UpgradeHealth();
 	void UpgradeStamina();
 	void UpgradeReloadSpeed();
 	void UpgradeWeapon();
-	void UpgradeProjectileCapacity();
 	
 	//resupply
-	bool CanResupply() const; 
+	int32 CanResupply() const; 
 	void Resupply();
+	
+	//doors
 	bool CanOpenDoor(int32 DoorLevel) const;
 	void OpenedDoor(int32 DoorLevel);
 

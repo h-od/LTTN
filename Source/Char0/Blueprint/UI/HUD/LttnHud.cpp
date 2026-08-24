@@ -71,18 +71,15 @@ void ALttnHud::SetScore(const int32 Score) const
 	Overlay->SetScore(FText::FromString(std::to_string(Score).c_str()));
 }
 
-void ALttnHud::SetResupplyCooldown(const float RemainingTime) const
+void ALttnHud::ShowInteract(const bool bShow, const int32 Cost) const
 {
-	const int32 Time = RemainingTime; //round it down
-	const FString RemainingTimeString = std::to_string(Time).c_str();
-	Overlay->SetResupplyCooldown(
-		FText::FromString("Resupply in " + RemainingTimeString + "s")
-	);
-}
-
-void ALttnHud::ShowInteract(const bool bShow) const
-{
-	Overlay->ShowInteract(bShow);
+	if (Cost > 0)
+	{
+		Overlay->ShowInteractWithCost(bShow, FText::FromString(FString::FromInt(Cost) + " Points"));	
+	} else
+	{
+		Overlay->ShowInteract(bShow);
+	}
 }
 
 void ALttnHud::ShowSpectating(const bool bShow)

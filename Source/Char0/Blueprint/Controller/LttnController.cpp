@@ -120,23 +120,18 @@ void ALttnController::ShowMaxWeaponProjectiles(const int32 MaxProjectiles) const
 	HUD->SetMaxWeaponProjectiles(MaxProjectiles);
 }
 
-void ALttnController::ShowResupplyCooldown(const float TimerRemaining) const
-{
-	HUD->SetResupplyCooldown(TimerRemaining);
-}
-
 void ALttnController::ShowPlayerProjectiles(const int32 Projectiles) const
 {
 	HUD->SetPlayerProjectiles(Projectiles);
 }
 
-void ALttnController::ShowCanInteract(const bool bShow) const
+void ALttnController::ShowCanInteract(const bool bShow, const int32 Cost) const
 {
 	if (!IsLocalController())
 	{
 		return;
 	}
-	HUD->ShowInteract(bShow);
+	HUD->ShowInteract(bShow, Cost);
 }
 
 void ALttnController::StartGame()

@@ -18,7 +18,7 @@ void UGameplayComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
-void UGameplayComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+void UGameplayComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(UGameplayComponent, PlayerManager);
@@ -151,29 +151,24 @@ void UGameplayComponent::StopSprinting()
 	StaminaDepletedDelegate.RemoveDynamic(this, &UGameplayComponent::StopSprinting);
 }
 
-bool UGameplayComponent::CanUpgradeHealth() const
+int32 UGameplayComponent::CanUpgradeHealth() const
 {
 	return PlayerManager.CanUpgradeHealth();
 }
 
-bool UGameplayComponent::CanUpgradeStamina() const
+int32 UGameplayComponent::CanUpgradeStamina() const
 {
 	return PlayerManager.CanUpgradeStamina();
 }
 
-bool UGameplayComponent::CanUpgradeReloadSpeed() const
+int32 UGameplayComponent::CanUpgradeReloadSpeed() const
 {
 	return PlayerManager.CanUpgradeReloadSpeed();
 }
 
-bool UGameplayComponent::CanUpgradeWeapon() const
+int32 UGameplayComponent::CanUpgradeWeapon() const
 {
 	return PlayerManager.CanUpgradeWeapon();
-}
-
-bool UGameplayComponent::CanUpgradeProjectileCapacity() const
-{
-	return PlayerManager.CanUpgradeProjectileCapacity();
 }
 
 void UGameplayComponent::UpgradeHealth()
@@ -211,34 +206,15 @@ void UGameplayComponent::UpgradeWeapon()
 	}
 }
 
-void UGameplayComponent::UpgradeProjectileCapacity()
+int32 UGameplayComponent::CanResupply() const
 {
-	if (PlayerManager.CanUpgradeProjectileCapacity())
-	{
-		GetCharacter()->ShowScore(PlayerManager.CurrentScore, PlayerManager.UpgradeProjectileCapacity());
-		GetCharacter()->ShowMaxPlayerProjectiles(PlayerManager.Player.MaxProjectiles);
-	}
-}
-
-bool UGameplayComponent::CanResupply() const
-{
-	return GetWorld()->GetTimerManager().GetTimerRemaining(ResupplyTimerHandle) <= 0.0f and PlayerManager.CanResupply();
+	return PlayerManager.CanResupply();
 }
 
 void UGameplayComponent::Resupply()
 {
-	//TODO cost (inc with level?)
-	if (const float TimerRemaining = GetWorld()->GetTimerManager().GetTimerRemaining(ResupplyTimerHandle); TimerRemaining <= 0.0f)
-	{
-		PlayerManager.ResupplyProjectiles();
-		GetCharacter()->ShowPlayerProjectiles(PlayerManager.Player.Projectiles);
-		GetWorld()->GetTimerManager().ClearTimer(ResupplyTimerHandle);
-		GetWorld()->GetTimerManager().SetTimer(ResupplyTimerHandle, 60.0f, false);
-	}
-	else
-	{
-		GetCharacter()->ShowResupplyCooldown(TimerRemaining);
-	}
+	GetCharacter()->ShowScore(PlayerManager.CurrentScore, PlayerManager.ResupplyProjectiles());
+	GetCharacter()->ShowPlayerProjectiles(PlayerManager.Player.Projectiles);
 }
 
 bool UGameplayComponent::CanOpenDoor(const int32 DoorLevel) const
@@ -306,8 +282,7 @@ void UGameplayComponent::TryFire()
 	{
 		Fire();
 
-		GetCharacter()->UpdateWeaponProjectiles(PlayerManager.DecrementProjectileCount()); // todo this is for the HUD
-
+		GetCharacter()->UpdateWeaponProjectiles(PlayerManager.DecrementProjectileCount());
 
 		if (!PlayerManager.ShouldReload())
 		{

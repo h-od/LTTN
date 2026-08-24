@@ -43,7 +43,6 @@ private:
 	int32 StaminaLevel = 0;
 	int32 ReloadSpeedLevel = 0;
 	int32 WeaponLevel = 0;
-	int32 ProjectileCapacityLevel = 0;
 
 public:
 	UPROPERTY()
@@ -61,21 +60,19 @@ public:
 	UPROPERTY()
 	FWeaponInfo Weapon;
 	
-	bool CanUpgradeHealth() const;
-	bool CanUpgradeStamina() const;
-	bool CanUpgradeReloadSpeed() const;
-	bool CanUpgradeWeapon() const;
-	bool CanResupply() const;
-	bool CanUpgradeProjectileCapacity() const;
+	int32 CanUpgradeHealth() const;
+	int32 CanUpgradeStamina() const;
+	int32 CanUpgradeReloadSpeed() const;
+	int32 CanUpgradeWeapon() const;
+	int32 CanResupply() const;
 	
 	int32 UpgradeHealth();
 	int32 UpgradeStamina();
 	int32 UpgradeReloadSpeed();
 	int32 UpgradeWeapon();
-	int32 UpgradeProjectileCapacity();
 	
 	void Reload();
-	void ResupplyProjectiles();
+	int32 ResupplyProjectiles();
 	bool CanFire() const;
 	int32 DecrementProjectileCount();
 	bool ShouldReload() const;
@@ -94,6 +91,7 @@ private:
 	int32 UpgradeStaminaCost() const;
 	int32 UpgradeReloadSpeedCost() const;
 	int32 UpgradeWeaponCost() const;
+	int32 ResupplyCost() const;
 	int32 UpgradeProjectileCapacityCost() const;
 	static int32 GetCostForDoorLevel(int32 DoorLevel);
 };

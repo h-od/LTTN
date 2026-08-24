@@ -41,6 +41,9 @@ public:
 	void ShowInteract(const bool bShow);
 
 	UFUNCTION(BlueprintImplementableEvent)
+	void ShowInteractWithCost(const bool bShow, const FText& Cost);
+
+	UFUNCTION(BlueprintImplementableEvent)
 	void SetWave(const FText& Wave);
 
 	void Show();

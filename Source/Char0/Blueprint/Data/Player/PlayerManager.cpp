@@ -53,55 +53,49 @@ FPlayerManager::FPlayerManager(
 	);
 }
 
-bool FPlayerManager::CanUpgradeHealth() const
+int32 FPlayerManager::CanUpgradeHealth() const
 {
-	if (HealthLevel < MaxLevel)
+	if (const int32 HealthCost = UpgradeHealthCost(); HealthLevel < MaxLevel and CurrentScore >= HealthCost)
 	{
-		return CurrentScore >= UpgradeHealthCost();
+		return HealthCost;
+	}
+	return -1;
+}
+
+int32 FPlayerManager::CanUpgradeStamina() const
+{
+	if (const int32 StaminaCost = UpgradeStaminaCost(); StaminaLevel < MaxLevel and CurrentScore >= StaminaCost)
+	{
+		return StaminaCost;
+	}
+	return -1;
+}
+
+int32 FPlayerManager::CanUpgradeReloadSpeed() const
+{
+	if (const int32 ReloadSpeedCost = UpgradeReloadSpeedCost(); ReloadSpeedLevel < MaxLevel and CurrentScore >= ReloadSpeedCost)
+	{
+		return ReloadSpeedCost;
 	}
 	return false;
 }
 
-bool FPlayerManager::CanUpgradeStamina() const
+int32 FPlayerManager::CanUpgradeWeapon() const
 {
-	if (StaminaLevel < MaxLevel)
+	if (const int32 WeaponCost = UpgradeWeaponCost(); WeaponLevel < MaxLevel and CurrentScore >= WeaponCost)
 	{
-		return CurrentScore >= UpgradeStaminaCost();
+		return WeaponCost;
 	}
-	return false;
+	return -1;
 }
 
-bool FPlayerManager::CanUpgradeReloadSpeed() const
+int32 FPlayerManager::CanResupply() const
 {
-	if (ReloadSpeedLevel < MaxLevel)
+	if (const int32 Cost = ResupplyCost(); Player.Projectiles < Player.MaxProjectiles and CurrentScore >= Cost)
 	{
-		return CurrentScore >= UpgradeReloadSpeedCost();
+		return Cost;
 	}
-	return false;
-}
-
-bool FPlayerManager::CanUpgradeWeapon() const
-{
-	if (WeaponLevel < MaxLevel)
-	{
-		return CurrentScore >= UpgradeWeaponCost();
-	}
-	return false;
-}
-
-bool FPlayerManager::CanResupply() const
-{
-	//TODO introduce cost
-	return Player.Projectiles < Player.MaxProjectiles;
-}
-
-bool FPlayerManager::CanUpgradeProjectileCapacity() const
-{
-	if (ProjectileCapacityLevel < MaxLevel)
-	{
-		return CurrentScore >= UpgradeProjectileCapacityCost();
-	}
-	return false;
+	return -1;
 }
 
 int32 FPlayerManager::UpgradeHealth()
@@ -143,7 +137,7 @@ int32 FPlayerManager::UpgradeStamina()
 
 int32 FPlayerManager::UpgradeReloadSpeed()
 {
-	int32 Cost = UpgradeReloadSpeedCost();
+	const int32 Cost = UpgradeReloadSpeedCost();
 	CurrentScore -= Cost;
 	SpentScore += Cost;
 
@@ -163,16 +157,18 @@ int32 FPlayerManager::UpgradeWeapon()
 	const int32 Cost = UpgradeWeaponCost();
 	CurrentScore -= Cost;
 	SpentScore += Cost;
-
+	
+	Player.MaxProjectiles *= 2;
+	
 	switch (WeaponLevel)
 	{
 	case 0:
-		Weapon.Range *= 1.5;
+		Weapon.Range *= 1.5;//TODO remove
 		Weapon.Damage *= 2;
 		Weapon.MaxProjectiles *= 2;
 		break;
 	case 1:
-		Weapon.Range *= 1.5;
+		Weapon.Range *= 1.5;//TODO remove
 		Weapon.Damage *= 2;
 		Weapon.FireRate = 0.5f;
 		break;
@@ -204,17 +200,6 @@ int32 FPlayerManager::UpgradeWeapon()
 	return Cost;
 }
 
-int32 FPlayerManager::UpgradeProjectileCapacity()
-{
-	int32 Cost = UpgradeProjectileCapacityCost();
-	CurrentScore -= Cost;
-	SpentScore += Cost;
-
-	ProjectileCapacityLevel++;
-	Player.MaxProjectiles *= 2;
-	return Cost;
-}
-
 void FPlayerManager::Reload()
 {
 	const int32 RequiredProjectiles = Weapon.MaxProjectiles - Weapon.ProjectileCount;
@@ -230,8 +215,12 @@ void FPlayerManager::Reload()
 	}
 }
 
-void FPlayerManager::ResupplyProjectiles()
+int32 FPlayerManager::ResupplyProjectiles()
 {
+	const int32 Cost = ResupplyCost();
+	CurrentScore -= Cost;
+	SpentScore += Cost;
+	
 	if (const int32 Required = Weapon.MaxProjectiles * 2; Required + Player.Projectiles <= Player.MaxProjectiles)
 	{
 		Player.Projectiles += Required;
@@ -240,6 +229,7 @@ void FPlayerManager::ResupplyProjectiles()
 	{
 		Player.Projectiles = Player.MaxProjectiles;
 	}
+	return Cost;
 }
 
 bool FPlayerManager::CanFire() const
@@ -342,9 +332,9 @@ int32 FPlayerManager::UpgradeWeaponCost() const
 	return GetCostForLevel(WeaponLevel + 1);
 }
 
-int32 FPlayerManager::UpgradeProjectileCapacityCost() const
+int32 FPlayerManager::ResupplyCost() const
 {
-	return GetCostForLevel(ProjectileCapacityLevel + 1);
+	return 500;//todo variable or static?
 }
 
 int32 FPlayerManager::GetCostForDoorLevel(const int32 DoorLevel)

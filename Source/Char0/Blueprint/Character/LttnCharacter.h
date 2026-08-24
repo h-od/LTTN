@@ -222,7 +222,6 @@ public:
 	void ShowScore(int32 CurrentScore, int32 Cost) const;
 	void ShowMaxPlayerProjectiles(int32 MaxProjectiles) const;
 	void ShowMaxWeaponProjectiles(int32 MaxProjectiles) const;
-	void ShowResupplyCooldown(float TimerRemaining) const;
 	void ShowPlayerProjectiles(int32 Projectiles) const;
 	
 	//InteractableActor

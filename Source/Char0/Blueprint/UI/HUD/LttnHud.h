@@ -46,9 +46,8 @@ public:
 	void SetMaxPlayerProjectiles(int32 Count) const;
 	void ShowReloading(int32 ReloadingTime) const;
 	void SetScore(int32 Score) const;
-	void SetResupplyCooldown(float RemainingTime) const;
 	
-	void ShowInteract(bool bShow) const;
+	void ShowInteract(bool bShow, const int32 Cost) const;
 	void ShowSpectating(bool bShow);
 
 private:
