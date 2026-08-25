@@ -143,6 +143,7 @@ int32 FPlayerManager::UpgradeReloadSpeed()
 
 	ReloadSpeedLevel++;
 	Player.ReloadTime -= 1;
+	Player.MaxProjectiles *= 2;
 	return Cost;
 }
 
@@ -157,8 +158,6 @@ int32 FPlayerManager::UpgradeWeapon()
 	const int32 Cost = UpgradeWeaponCost();
 	CurrentScore -= Cost;
 	SpentScore += Cost;
-	
-	Player.MaxProjectiles *= 2;
 	
 	switch (WeaponLevel)
 	{
