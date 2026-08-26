@@ -4,10 +4,5 @@
 
 void UControlsWidget::Back() const
 {
-	Parent->ShowSettingsWidget();
-}
-
-void UControlsWidget::SetParent(USettingsWidget* SettingsWidget)
-{
-	Parent = SettingsWidget;
+	
 }

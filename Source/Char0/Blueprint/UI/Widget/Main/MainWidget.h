@@ -4,46 +4,73 @@
 #include "Blueprint/UserWidget.h"
 #include "MainWidget.generated.h"
 
+enum class EMainNavigation : uint8;
 class UJoinWidget;
 class UHostWidget;
 class USettingsWidget;
 class UStartWidget;
+class ULoadingWidget;
 
 UCLASS()
 class CHAR0_API UMainWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-public:
-	UFUNCTION(BlueprintImplementableEvent)
-	void StartGame();
-	UFUNCTION(BlueprintImplementableEvent)
-	void ShowSettingsWidget();
-	UFUNCTION(BlueprintImplementableEvent)
-	void ShowHostWidget();
-	UFUNCTION(BlueprintImplementableEvent)
-	void ShowJoinWidget();
-	UFUNCTION(BlueprintImplementableEvent)
-	void ShowStartWidget();
-	UFUNCTION(BlueprintImplementableEvent)
-	void ShowControlsWidget();
-	UFUNCTION(BlueprintImplementableEvent)
-	void BackFromControls();
-
 protected:
-	UFUNCTION(BlueprintCallable)
-	void SetStartWidget(UStartWidget* Widget);
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UStartWidget> StartWidgetClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UHostWidget> HostWidgetClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UJoinWidget> JoinWidgetClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<USettingsWidget> SettingsWidgetClass;
 	
-	UFUNCTION(BlueprintCallable)
-	void SetHostWidget(UHostWidget* Widget);
+private:
+	UPROPERTY()
+	TObjectPtr<UStartWidget> StartWidget;
+	UPROPERTY()
+	TObjectPtr<UHostWidget> HostWidget;
+	UPROPERTY()
+	TObjectPtr<UJoinWidget> JoinWidget;
+	UPROPERTY()
+	TObjectPtr<USettingsWidget> SettingsWidget;
 	
-	UFUNCTION(BlueprintCallable)
-	void SetJoinWidget(UJoinWidget* Widget);
+	UPROPERTY()
+	FTimerHandle TimerHandle;
 	
-	UFUNCTION(BlueprintCallable)
-	void SetSettingsWidget(USettingsWidget* Widget);
+protected:
+	virtual void NativeConstruct() override;
 
-// private:
-// 	UStartWidget* GetStartWidget();
-// 	USettingsWidget* GetSettingsWidget();
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartSolo();
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartHost();
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartJoin(const FText& Code);
+
+	UFUNCTION(BlueprintCallable)
+	void FailedToJoin();
+	
+private:
+	UFUNCTION()
+	void StartNavigation(EMainNavigation Destination);
+	
+	void ShowStart();
+	void ShowSettings();
+	void ShowJoin();
+	void ShowHost();
+	
+	void HideStart();
+	void HideHost();
+	void HideJoin();
+	UFUNCTION()
+	void BackFromSettings();
+	
+	void ShowGameOnlyUI() const;
+	
+	UStartWidget* GetStartWidget();
+	UHostWidget* GetHostWidget();
+	UJoinWidget* GetJoinWidget();
+	USettingsWidget* GetSettingsWidget();
 };

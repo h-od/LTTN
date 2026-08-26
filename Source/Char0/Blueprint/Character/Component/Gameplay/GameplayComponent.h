@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "Char0/Blueprint/Data/Gameplay/GameplayManager.h"
 #include "Char0/Blueprint/Data/Player/PlayerManager.h"
 #include "Components/ActorComponent.h"
 #include "GameplayComponent.generated.h"

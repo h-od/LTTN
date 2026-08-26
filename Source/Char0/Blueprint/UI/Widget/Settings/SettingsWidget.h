@@ -5,23 +5,36 @@
 #include "Char0/Blueprint/UI/Widget/Main/MainWidget.h"
 #include "SettingsWidget.generated.h"
 
+class UControlsWidget;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBackDelegate);
+
 UCLASS()
 class CHAR0_API USettingsWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
+protected:
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UControlsWidget> ControlsWidgetClass;
+	
+private:
 	UPROPERTY()
-	UMainWidget* Parent;
+	TObjectPtr<UControlsWidget> ControlsWidget;
 
+public:
+	FBackDelegate BackDelegate;
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void Unfade();
+	UFUNCTION(BlueprintImplementableEvent)
+	void Fade();
+	
 protected:
 	UFUNCTION(BlueprintCallable)
 	void Back() const;
 
 	UFUNCTION(BlueprintCallable)
 	void ShowControlsWidget() const;
-	
-public:
-	void SetParent(UMainWidget* MainWidget);
 	
 	UFUNCTION()
 	void ShowSettingsWidget() const;

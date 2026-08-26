@@ -5,20 +5,13 @@
 
 void USettingsWidget::Back() const
 {
-	Parent->ShowStartWidget();
+	BackDelegate.Broadcast();
 }
 
 void USettingsWidget::ShowControlsWidget() const
 {
-	Parent->ShowControlsWidget();
-}
-
-void USettingsWidget::SetParent(UMainWidget* MainWidget)
-{
-	Parent = MainWidget;
 }
 
 void USettingsWidget::ShowSettingsWidget() const
 {
-	Parent->BackFromControls();
 }

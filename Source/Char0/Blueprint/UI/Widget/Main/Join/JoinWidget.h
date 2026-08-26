@@ -5,20 +5,26 @@
 #include "Char0/Blueprint/UI/Widget/Main/MainWidget.h"
 #include "JoinWidget.generated.h"
 
+DECLARE_DELEGATE_OneParam(FJoinNavDelegate, EMainNavigation);
+
 UCLASS()
 class CHAR0_API UJoinWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
-	UPROPERTY()
-	UMainWidget* Parent;
-	
 public:
-	void SetParent(UMainWidget* MainWidget);
+	FJoinNavDelegate NavigationDelegate;
 	
+	UFUNCTION(BlueprintImplementableEvent)
+	void Unfade();
+	UFUNCTION(BlueprintImplementableEvent)
+	void Fade();
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetButtonEnabled(bool bEnabled);
+
 protected:
 	UFUNCTION(BlueprintCallable)
-	void Start() const;
+	void JoinGame(const FText& JoinCode);
 	UFUNCTION(BlueprintCallable)
 	void Back() const;
 };

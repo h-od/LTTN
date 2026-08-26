@@ -1,16 +1,14 @@
 ﻿#include "JoinWidget.h"
 
-void UJoinWidget::SetParent(UMainWidget* MainWidget)
-{
-	Parent = MainWidget;
-}
+#include "Char0/Blueprint/UI/Widget/Main/MainNavigation.h"
 
-void UJoinWidget::Start() const
+void UJoinWidget::JoinGame(const FText& JoinCode)
 {
-	Parent->StartGame();
+	SetButtonEnabled(false);
+	NavigationDelegate.ExecuteIfBound(EMainNavigation::StartJoin);
 }
 
 void UJoinWidget::Back() const
 {
-	Parent->ShowStartWidget();
+	NavigationDelegate.ExecuteIfBound(EMainNavigation::BackFromJoin);
 }

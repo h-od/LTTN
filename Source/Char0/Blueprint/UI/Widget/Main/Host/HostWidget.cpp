@@ -1,18 +1,13 @@
 ﻿#include "HostWidget.h"
 
-#include "Char0/Blueprint/UI/Widget/Main/Join/JoinWidget.h"
-
-void UHostWidget::SetParent(UMainWidget* MainWidget)
-{
-	Parent = MainWidget;
-}
+#include "Char0/Blueprint/UI/Widget/Main/MainNavigation.h"
 
 void UHostWidget::StartGame() const
 {
-	Parent->StartGame();
+	NavigationDelegate.ExecuteIfBound(EMainNavigation::StartHost);
 }
 
 void UHostWidget::Back() const
 {
-	Parent->ShowStartWidget();
+	NavigationDelegate.ExecuteIfBound(EMainNavigation::BackFromHost);
 }

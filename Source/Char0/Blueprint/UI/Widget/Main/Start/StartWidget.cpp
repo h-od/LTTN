@@ -1,29 +1,24 @@
 ﻿#include "StartWidget.h"
 
 #include "CoreMinimal.h"
-#include "Char0/Blueprint/UI/Widget/Main/MainWidget.h"
+#include "Char0/Blueprint/UI/Widget/Main/MainNavigation.h"
 
 void UStartWidget::Solo() const
 {
-	Parent->StartGame();
+	NavigationDelegate.ExecuteIfBound(EMainNavigation::StartSolo);
 }
 
 void UStartWidget::ShowHost() const
 {
-	Parent->ShowHostWidget();
+	NavigationDelegate.ExecuteIfBound(EMainNavigation::Host);
 }
 
 void UStartWidget::ShowJoin() const
 {
-	Parent->ShowJoinWidget();
+	NavigationDelegate.ExecuteIfBound(EMainNavigation::Join);
 }
 
 void UStartWidget::ShowSettings() const
 {
-	Parent->ShowSettingsWidget();
-}
-
-void UStartWidget::SetParent(UMainWidget* MainWidget)
-{
-	Parent = MainWidget;
+	NavigationDelegate.ExecuteIfBound(EMainNavigation::Settings);
 }
