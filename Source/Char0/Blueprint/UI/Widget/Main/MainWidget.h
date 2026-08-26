@@ -25,6 +25,10 @@ public:
 	void ShowJoinWidget();
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowStartWidget();
+	UFUNCTION(BlueprintImplementableEvent)
+	void ShowControlsWidget();
+	UFUNCTION(BlueprintImplementableEvent)
+	void BackFromControls();
 
 protected:
 	UFUNCTION(BlueprintCallable)

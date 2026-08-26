@@ -9,6 +9,7 @@
 #include "Char0/Blueprint/UI/Widget/Gameplay/GameSummaryWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "UserSettings/EnhancedInputUserSettings.h"
 
 void ALttnController::BeginPlay()
 {
@@ -20,16 +21,21 @@ void ALttnController::BeginPlay()
 void ALttnController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-	// 	if (IsLocalPlayerController())
-	// 	{
-	// 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-	// 		{
-	// 			for (const UInputMappingContext* Context : MappingContexts)
-	// 			{
-	// 				Subsystem->AddMappingContext(Context, 0);
-	// 			}
-	// 		}
-	// 	}
+	if (IsLocalPlayerController())
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+		{
+			FModifyContextOptions Options;
+			Options.bNotifyUserSettings = true;
+			Subsystem->AddMappingContext(MappingContext, 0, Options);
+			Subsystem->AddMappingContext(SpectateMappingContext, 0);
+
+			if (UEnhancedInputUserSettings* Settings = Subsystem->GetUserSettings(); Settings != nullptr and !Settings->IsMappingContextRegistered(MappingContext))
+			{
+				Settings->RegisterInputMappingContext(MappingContext);
+			}
+		}
+	}
 }
 
 void ALttnController::OnPossess(APawn* PawnToPossess)
@@ -53,16 +59,6 @@ void ALttnController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ALttnController, Id);
 }
-
-// void ALttnController::JoinGame()
-// {
-// 	Server_JoinGame();
-// }
-
-// void ALttnController::Server_JoinGame_Implementation()
-// {
-// 	GetLttnGameMode()->PlayerJoined(this);
-// }
 
 void ALttnController::ShowStartGame()
 {
@@ -147,11 +143,6 @@ void ALttnController::PlayerDead()
 void ALttnController::Server_PlayerDead_Implementation()
 {
 	GetLttnGameMode()->PlayerDead(Id);
-
-	// if (ALttnCharacter* Char = Cast<ALttnCharacter>(GetCharacter()))
-	// {
-	// 	Char->SetRagDoll();
-	// }
 }
 
 void ALttnController::StartSpectate(const int32 SpectateId)
@@ -245,10 +236,9 @@ void ALttnController::OpenDoor(const int32 DoorNumber)
 
 bool ALttnController::DoPause()
 {
-	//TODO if its single player then pause proper, if not then inform the UI
+	// if its single player then pause proper, if not then inform the UI
 	if (GameState and GameState->PlayerArray.Num() == 1)
 	{
-		// Pause();
 		SetPause(true);
 		return true;
 	}
@@ -260,19 +250,25 @@ void ALttnController::Client_OnPossess_Implementation(const bool bIsSpectate)
 {
 	if (IsLocalPlayerController())
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-		{
-			if (bIsSpectate)
-			{
-				Subsystem->RemoveMappingContext(MappingContext);
-				Subsystem->AddMappingContext(SpectateMappingContext, 0);
-			}
-			else
-			{
-				Subsystem->AddMappingContext(MappingContext, 0);
-				Subsystem->RemoveMappingContext(SpectateMappingContext);
-			}
-		}
+		// if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+		// {
+		// 	if (bIsSpectate)
+		// 	{
+		// 		Subsystem->RemoveMappingContext(MappingContext);
+		// 		Subsystem->AddMappingContext(SpectateMappingContext, 0);
+		// 	}
+		// 	else
+		// 	{
+		// 		Subsystem->AddMappingContext(MappingContext, 0);
+		// 		Subsystem->RemoveMappingContext(SpectateMappingContext);
+		// 	}
+		// 	UEnhancedInputUserSettings* Settings = Subsystem->GetUserSettings();
+		//
+		// 	if (Settings; !Settings->IsMappingContextRegistered(MappingContext))
+		// 	{
+		// 		Settings->RegisterInputMappingContext(MappingContext);
+		// 	}
+		// }
 	}
 }
 

@@ -17,6 +17,12 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void Back() const;
 
+	UFUNCTION(BlueprintCallable)
+	void ShowControlsWidget() const;
+	
 public:
 	void SetParent(UMainWidget* MainWidget);
+	
+	UFUNCTION()
+	void ShowSettingsWidget() const;
 };
