@@ -24,10 +24,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UControlsWidget> ControlsWidgetClass;
 	
-private:
-	UPROPERTY()
-	FTimerHandle TimerHandle;
-	
+private:	
 	UPROPERTY()
 	TObjectPtr<UAudioWidget> AudioWidget;
 	UPROPERTY()
@@ -53,11 +50,7 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void ShowControlsWidget();
 
-private:
-	void UnfadeAudio();
-	void UnfadeGraphics();
-	void UnfadeControls();
-	
+private:	
 	UFUNCTION()
 	void BackAudio();
 	UFUNCTION()

@@ -50,7 +50,7 @@ void UMainWidget::StartNavigation(const EMainNavigation Destination)
 		break;
 	case EMainNavigation::Settings:
 		HideStart();
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UMainWidget::ShowSettings, 0.5f, false);
+		ShowSettings();
 		break;
 	case EMainNavigation::BackFromHost:
 		HideHost();

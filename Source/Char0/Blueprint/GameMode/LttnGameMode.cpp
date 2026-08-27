@@ -193,9 +193,6 @@ void ALttnGameMode::OpenDoor(const int32 DoorNumber)
 void ALttnGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	// BotManager = NewObject<UBotManager>(this, UBotManager::StaticClass());
-	// BotManager->SetBotClass(BotClass);
-
 	GameplayManager = FGameplayManager();
 
 	FindAndSetDoors();
