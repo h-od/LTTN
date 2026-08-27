@@ -30,12 +30,12 @@ void UMainWidget::StartNavigation(const EMainNavigation Destination)
 		StartSolo();
 		break;
 	case EMainNavigation::StartHost:
-		HideStart();
+		HideHost();
 		ShowGameOnlyUI();
 		StartHost();
 		break;
 	case EMainNavigation::StartJoin:
-		HideStart();
+		HideJoin();
 		ShowGameOnlyUI();
 		StartJoin(FText::FromString(""));
 		break;
@@ -121,8 +121,7 @@ void UMainWidget::BackFromSettings()
 	USettingsWidget* Widget = GetSettingsWidget();
 	Widget->BackDelegate.RemoveDynamic(this, &UMainWidget::BackFromSettings);
 	Widget->Fade();
-	//todo .5s delay
-	ShowStart();
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UMainWidget::ShowStart, 0.5f, false);
 }
 
 void UMainWidget::ShowGameOnlyUI() const

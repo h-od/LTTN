@@ -5,8 +5,11 @@
 #include "Char0/Blueprint/UI/Widget/Main/MainWidget.h"
 #include "SettingsWidget.generated.h"
 
+class UGraphicsWidget;
+class UAudioWidget;
 class UControlsWidget;
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBackDelegate);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSettingsBackDelegate);
 
 UCLASS()
 class CHAR0_API USettingsWidget : public UUserWidget
@@ -15,14 +18,25 @@ class CHAR0_API USettingsWidget : public UUserWidget
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UAudioWidget> AudioWidgetClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UGraphicsWidget> GraphicsWidgetClass;
+	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UControlsWidget> ControlsWidgetClass;
 	
 private:
 	UPROPERTY()
+	FTimerHandle TimerHandle;
+	
+	UPROPERTY()
+	TObjectPtr<UAudioWidget> AudioWidget;
+	UPROPERTY()
+	TObjectPtr<UGraphicsWidget> GraphicsWidget;
+	UPROPERTY()
 	TObjectPtr<UControlsWidget> ControlsWidget;
 
 public:
-	FBackDelegate BackDelegate;
+	FSettingsBackDelegate BackDelegate;
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void Unfade();
@@ -32,10 +46,26 @@ public:
 protected:
 	UFUNCTION(BlueprintCallable)
 	void Back() const;
-
 	UFUNCTION(BlueprintCallable)
-	void ShowControlsWidget() const;
+	void ShowAudioWidget();
+	UFUNCTION(BlueprintCallable)
+	void ShowGraphicsWidget();
+	UFUNCTION(BlueprintCallable)
+	void ShowControlsWidget();
+
+private:
+	void UnfadeAudio();
+	void UnfadeGraphics();
+	void UnfadeControls();
 	
 	UFUNCTION()
-	void ShowSettingsWidget() const;
+	void BackAudio();
+	UFUNCTION()
+	void BackGraphics();
+	UFUNCTION()
+	void BackControls();
+
+	UAudioWidget* GetAudioWidget();
+	UGraphicsWidget* GetGraphicsWidget();
+	UControlsWidget* GetControlsWidget();
 };

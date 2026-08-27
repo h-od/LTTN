@@ -2,19 +2,17 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "ControlsWidget.generated.h"
+#include "AudioWidget.generated.h"
 
-class USettingsWidget;
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FControlsBackDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAudioBackDelegate);
 
 UCLASS()
-class CHAR0_API UControlsWidget : public UUserWidget
+class CHAR0_API UAudioWidget : public UUserWidget
 {
 	GENERATED_BODY()
-
+	
 public:
-	FControlsBackDelegate BackDelegate;
+	FAudioBackDelegate BackDelegate;
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void Unfade();

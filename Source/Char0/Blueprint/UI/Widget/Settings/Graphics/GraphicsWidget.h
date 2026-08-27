@@ -2,19 +2,17 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "ControlsWidget.generated.h"
+#include "GraphicsWidget.generated.h"
 
-class USettingsWidget;
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FControlsBackDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGraphicsBackDelegate);
 
 UCLASS()
-class CHAR0_API UControlsWidget : public UUserWidget
+class CHAR0_API UGraphicsWidget : public UUserWidget
 {
 	GENERATED_BODY()
-
+	
 public:
-	FControlsBackDelegate BackDelegate;
+	FGraphicsBackDelegate BackDelegate;
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void Unfade();
