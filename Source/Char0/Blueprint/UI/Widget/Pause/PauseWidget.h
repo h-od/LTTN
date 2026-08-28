@@ -22,9 +22,11 @@ private:
 	UPROPERTY()
 	FTimerHandle TimerHandle;
 	
-protected:
+public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void Unfade();
+	
+protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void Fade();
 

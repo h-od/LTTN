@@ -724,7 +724,7 @@ void ALttnCharacter::Interact()
 
 void ALttnCharacter::Pause()
 {
-	GetPauseWidget()->AddToViewport();
+	GetPauseWidget()->Unfade();
 
 	if (ALttnController* Con = GetLttnController())
 	{
@@ -1082,6 +1082,7 @@ UPauseWidget* ALttnCharacter::GetPauseWidget()
 	if (!PauseWidget)
 	{
 		PauseWidget = Cast<UPauseWidget>(CreateWidget(GetWorld(), PauseWidgetClass));
+		PauseWidget->AddToViewport();
 	}
 	return PauseWidget;
 }

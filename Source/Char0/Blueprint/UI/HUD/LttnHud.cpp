@@ -75,11 +75,9 @@ void ALttnHud::ShowInteract(const bool bShow, const int32 Cost) const
 {
 	if (Cost > 0)
 	{
-		Overlay->ShowInteractWithCost(bShow, FText::FromString(FString::FromInt(Cost) + " Points"));	
-	} else
-	{
-		Overlay->ShowInteract(bShow);
+		Overlay->ShowInteractWithCost(bShow, FText::FromString(FString::FromInt(Cost) + " Points"));
 	}
+	Overlay->ShowInteract(bShow);
 }
 
 void ALttnHud::ShowSpectating(const bool bShow)
