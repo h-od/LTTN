@@ -26,3 +26,8 @@ void UControlsMappingWidget::NativeConstruct()
 		SetControlsNotFound();
 	}
 }
+
+void UControlsMappingWidget::Back() const
+{
+	BackDelegate.Broadcast();
+}

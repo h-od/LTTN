@@ -31,7 +31,7 @@ public class Char0 : ModuleRules
 			"NavigationSystem"
 		]);
 
-		PrivateDependencyModuleNames.AddRange(["Niagara"]);
+		PrivateDependencyModuleNames.AddRange(["Niagara", "NiagaraEditor"]);
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
