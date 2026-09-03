@@ -4,6 +4,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Char0/Blueprint/Character/LttnCharacter.h"
 #include "Char0/Blueprint/Character/Bot/BotCharacter.h"
+#include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
@@ -393,7 +394,9 @@ TArray<FHitResult> UGameplayComponent::SortHits(TArray<FHitResult> Array, const 
 
 void UGameplayComponent::DidFire(const FVector& HitLocation)
 {
-	Server_DidFire(GetCharacter()->GetWeaponLocation(), HitLocation);
+	const USkeletalMeshComponent* Mesh = GetCharacter()->GetMesh();
+	// Server_DidFire(GetCharacter()->GetWeaponLocation(), HitLocation);
+	Server_DidFire(Mesh->GetSocketByName(FName("fire_socket"))->GetSocketLocation(Mesh), HitLocation);
 }
 
 void UGameplayComponent::Server_DidFire_Implementation(const FVector& WeaponLocation, const FVector& HitLocation)

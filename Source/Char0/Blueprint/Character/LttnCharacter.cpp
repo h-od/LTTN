@@ -417,7 +417,7 @@ void ALttnCharacter::CanInteract(const EInteractableType Type)
 
 	const ALttnController* C = GetLttnController();
 	int32 Cost = -1;
-	
+
 	switch (Type)
 	{
 	case EInteractableType::StartGame:
@@ -446,7 +446,7 @@ void ALttnCharacter::CanInteract(const EInteractableType Type)
 		break;
 	case EInteractableType::Revive:
 		Interactable = Type;
-		C->ShowCanInteract(true); 
+		C->ShowCanInteract(true);
 		return;
 	case EInteractableType::Door: //todo handled differently
 		return;;
@@ -455,7 +455,7 @@ void ALttnCharacter::CanInteract(const EInteractableType Type)
 		C->ShowCanInteract(false);
 		return;
 	}
-	
+
 	C->ShowCanInteract(Cost > 0, Cost);
 }
 
@@ -508,7 +508,9 @@ void ALttnCharacter::Client_CantRevive_Implementation()
 void ALttnCharacter::Client_Possessed_Implementation()
 {
 	LttnController = Cast<ALttnController>(GetController());
-	Camera->ActivateCameraForPlayerController(Cast<APlayerController>(GetController()), true, EGameplayCameraComponentActivationMode::Push);
+	Camera->ActivateCameraForPlayerController(LttnController, true, EGameplayCameraComponentActivationMode::Push);
+	LttnController->PlayerCameraManager->ViewPitchMin = -35.0f;
+	LttnController->PlayerCameraManager->ViewPitchMax = 35.0f;
 }
 
 void ALttnCharacter::Client_SetNewPlayerInfo_Implementation()
@@ -625,6 +627,7 @@ void ALttnCharacter::JumpStarted()
 void ALttnCharacter::AimStarted()
 {
 	InputState.bWantsToAim = true;
+	bIsAiming = true;
 	Server_InputStateUpdated(InputState);
 	Server_AimStarted();
 }
@@ -642,6 +645,8 @@ void ALttnCharacter::MC_AimStarted_Implementation()
 void ALttnCharacter::AimFinished()
 {
 	InputState.bWantsToAim = false;
+	bIsAiming = false;
+	bAimStartedByFire = false;
 	Server_InputStateUpdated(InputState);
 	Server_AimFinished();
 }
@@ -734,11 +739,20 @@ void ALttnCharacter::Pause()
 
 void ALttnCharacter::FireStarted()
 {
+	if (!bIsAiming)
+	{
+		AimStarted();
+		bAimStartedByFire = true;
+	}
 	GameplayComponent->StartFiring();
 }
 
 void ALttnCharacter::FireStopped()
 {
+	if (bIsAiming)
+	{
+		AimFinished();
+	}
 	GameplayComponent->StopFiring();
 }
 

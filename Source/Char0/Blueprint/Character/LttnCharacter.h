@@ -48,6 +48,10 @@ public:
 	bool bIsDead;
 
 private:
+	UPROPERTY()
+	bool bIsAiming = false;
+	UPROPERTY()
+	bool bAimStartedByFire = false;
 	//Simulated
 	UPROPERTY()
 	bool bWasMovingOnGroundLastFrameSimulated = true; //TODO true?
