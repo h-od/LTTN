@@ -234,6 +234,11 @@ void ALttnController::OpenDoor(const int32 DoorNumber)
 	Server_OpenDoor(DoorNumber);
 }
 
+void ALttnController::OpenBlockage(const int32 BlockageNumber)
+{
+	Server_OpenBlockage(BlockageNumber);
+}
+
 bool ALttnController::DoPause()
 {
 	// if its single player then pause proper, if not then inform the UI
@@ -275,6 +280,11 @@ void ALttnController::Client_OnPossess_Implementation(const bool bIsSpectate)
 void ALttnController::Server_OpenDoor_Implementation(int32 DoorNumber)
 {
 	GetLttnGameMode()->OpenDoor(DoorNumber);
+}
+
+void ALttnController::Server_OpenBlockage_Implementation(int32 BlockageNumber)
+{
+	GetLttnGameMode()->OpenBlockage(BlockageNumber);
 }
 
 void ALttnController::InitialiseHud(const FPlayerManager& PlayerManager)

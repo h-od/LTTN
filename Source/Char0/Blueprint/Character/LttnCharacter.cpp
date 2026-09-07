@@ -478,7 +478,20 @@ void ALttnCharacter::CanOpenDoor(const int32 DoorNumber, const int32 DoorLevel)
 		Interactable = EInteractableType::Door;
 		if (const ALttnController* C = GetLttnController())
 		{
-			C->ShowCanInteract(true); //todo show price too
+			C->ShowCanInteract(true); //todo show price too?
+		}
+	}
+}
+
+void ALttnCharacter::CanOpenBlockage(const int32 BlockageNumber)
+{
+	if (GameplayComponent->CanOpenBlockage())
+	{
+		BlockageToOpen = BlockageNumber;
+		Interactable = EInteractableType::Blockage;
+		if (const ALttnController* C = GetLttnController())
+		{
+			C->ShowCanInteract(true); //todo show price too?
 		}
 	}
 }
@@ -724,6 +737,14 @@ void ALttnCharacter::Interact()
 		}
 		CantInteract();
 		break;
+	case EInteractableType::Blockage:
+		if (GameplayComponent->CanOpenBlockage())
+		{
+			GameplayComponent->OpenedBlockage();
+			GetLttnController()->OpenBlockage(BlockageToOpen);
+		}
+		CantInteract();
+		break;
 	}
 }
 
@@ -741,6 +762,7 @@ void ALttnCharacter::FireStarted()
 {
 	if (!bIsAiming)
 	{
+		//todo just play anim and delay by 1sec
 		AimStarted();
 		bAimStartedByFire = true;
 	}

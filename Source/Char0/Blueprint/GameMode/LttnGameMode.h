@@ -5,6 +5,7 @@
 #include "GameFramework/GameMode.h"
 #include "LttnGameMode.generated.h"
 
+class ABlockage;
 class AStartPawn;
 class ALttnCharacter;
 class ASpawnArea;
@@ -45,6 +46,9 @@ class CHAR0_API ALttnGameMode : public AGameMode
 
 	UPROPERTY()
 	TMap<int32, ADoor*> Doors;
+
+	UPROPERTY()
+	TMap<int32, ABlockage*> Blockages;
 	
 	UPROPERTY()
 	TArray<ASpawnArea*> PlayerSpawn;//TODO TArray<FVector>
@@ -77,6 +81,7 @@ public:
 	void RevivePlayer(int32 RevivingPlayerId, int32 PlayerToReviveId);
 	
 	void OpenDoor(int32 DoorNumber);
+	void OpenBlockage(int32 BlockageNumber);
 
 protected:
 	virtual void BeginPlay() override;
@@ -84,6 +89,7 @@ protected:
 
 private:
 	void FindAndSetDoors();
+	void FindAndSetBlockages();
 	void FindAndSetSpawnAreas();
 
 	void StartWave();

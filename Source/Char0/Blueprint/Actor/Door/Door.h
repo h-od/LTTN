@@ -27,8 +27,6 @@ public:
 	void OpenDoor();
 
 protected:
-	
-protected:
 	UFUNCTION(BlueprintCallable)
 	void NotifyActor(AActor* Actor, const bool bNotifyCan) const;
 	

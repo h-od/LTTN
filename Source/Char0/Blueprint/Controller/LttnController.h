@@ -103,6 +103,7 @@ public:
 	void EnableSphere() const;
 	void DisableSphere() const;
 	void OpenDoor(int32 DoorNumber);
+	void OpenBlockage(int32 BlockageNumber);
 	bool DoPause();
 
 private:
@@ -113,6 +114,10 @@ private:
 	UFUNCTION(Server, Reliable)
 	void Server_OpenDoor(int32 DoorNumber);
 	void Server_OpenDoor_Implementation(int32 DoorNumber);
+	
+	UFUNCTION(Server, Reliable)
+	void Server_OpenBlockage(int32 BlockageNumber);
+	void Server_OpenBlockage_Implementation(int32 BlockageNumber);
 
 	void InitialiseHud(const FPlayerManager& PlayerManager);
 	UFUNCTION(Client, Reliable)

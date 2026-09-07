@@ -16,6 +16,7 @@ enum class EInteractableType : uint8
 	UpgradeReloadSpeed UMETA(DisplayName = "UpgradeReloadSpeed"),
 	
 	Door UMETA(DisplayName = "Door"),
+	Blockage UMETA(DisplayName = "Blockage"),
 	Revive UMETA(DisplayName = "Revive"),
 	
 	NoInteraction UMETA(DisplayName = "NoInteraction")

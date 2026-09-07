@@ -228,6 +228,16 @@ void UGameplayComponent::OpenedDoor(const int32 DoorLevel)
 	GetCharacter()->ShowScore(PlayerManager.CurrentScore, PlayerManager.OpenedDoor(DoorLevel));
 }
 
+bool UGameplayComponent::CanOpenBlockage()
+{
+	return PlayerManager.CanOpenBlockage();
+}
+
+void UGameplayComponent::OpenedBlockage()
+{
+	GetCharacter()->ShowScore(PlayerManager.CurrentScore, PlayerManager.OpenedBlockage());
+}
+
 ALttnCharacter* UGameplayComponent::GetCharacter()
 {
 	if (!Character)

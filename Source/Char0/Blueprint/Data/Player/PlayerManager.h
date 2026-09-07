@@ -84,6 +84,8 @@ public:
 	int32 AddScore(int32 Delta);
 	bool CanOpenDoor(int32 DoorLevel) const;
 	int32 OpenedDoor(int32 DoorLevel);
+	bool CanOpenBlockage();
+	int32 OpenedBlockage();
 
 private:
 	int32 GetCostForLevel(int32 Level) const;

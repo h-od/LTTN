@@ -1,5 +1,6 @@
 ﻿#include "LttnGameMode.h"
 
+#include "Char0/Blueprint/Actor/Blockage/Blockage.h"
 #include "Char0/Blueprint/Actor/Door/Door.h"
 #include "Char0/Blueprint/Actor/Spawn/SpawnArea.h"
 #include "Char0/Blueprint/Character/LttnCharacter.h"
@@ -190,12 +191,18 @@ void ALttnGameMode::OpenDoor(const int32 DoorNumber)
 	Doors[DoorNumber]->OpenDoor();
 }
 
+void ALttnGameMode::OpenBlockage(const int32 BlockageNumber)
+{
+	Blockages[BlockageNumber]->OpenBlockage();
+}
+
 void ALttnGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	GameplayManager = FGameplayManager();
 
 	FindAndSetDoors();
+	FindAndSetBlockages();
 	FindAndSetSpawnAreas();
 }
 
@@ -234,6 +241,25 @@ void ALttnGameMode::FindAndSetDoors()
 			ADoor* Door = Cast<ADoor>(Actor);
 			int32 InKey = Door->DoorNumber;
 			Doors.Add(InKey, Door);
+		}
+	}
+}
+
+void ALttnGameMode::FindAndSetBlockages()
+{
+	if (!Blockages.IsEmpty())
+	{
+		return;
+	}
+	TArray<AActor*> FoundBlockageActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABlockage::StaticClass(), FoundBlockageActors);
+	for (AActor* Actor : FoundBlockageActors)
+	{
+		if (Actor->IsA(ABlockage::StaticClass()))
+		{
+			ABlockage* Blockage = Cast<ABlockage>(Actor);
+			int32 InKey = Blockage->BlockageNumber;
+			Blockages.Add(InKey, Blockage);
 		}
 	}
 }

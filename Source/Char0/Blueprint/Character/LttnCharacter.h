@@ -111,6 +111,9 @@ private:
 	int32 DoorToOpenLevel;
 	
 	UPROPERTY()
+	int32 BlockageToOpen;
+	
+	UPROPERTY()
 	EInteractableType Interactable = EInteractableType::NoInteraction;
 	UPROPERTY()
 	int32 PlayerToRevive;
@@ -233,6 +236,7 @@ public:
 	void CantInteract();
 	
 	void CanOpenDoor(int32 DoorNumber, int32 DoorLevel);
+	void CanOpenBlockage(int32 BlockageNumber);
 	
 	void CanRevive(int32 RevivableId);
 	UFUNCTION(Client, Reliable)

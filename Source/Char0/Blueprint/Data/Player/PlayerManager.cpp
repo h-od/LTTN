@@ -292,6 +292,18 @@ int32 FPlayerManager::OpenedDoor(const int32 DoorLevel)
 	return Cost;
 }
 
+bool FPlayerManager::CanOpenBlockage()
+{
+	return CurrentScore >= 1000; //todo magic
+}
+
+int32 FPlayerManager::OpenedBlockage()
+{
+	const int32 Cost = 1000; //todo magic
+	CurrentScore -= Cost;
+	return Cost;
+}
+
 int32 FPlayerManager::GetCostForLevel(const int32 Level) const
 {
 	switch (Level)

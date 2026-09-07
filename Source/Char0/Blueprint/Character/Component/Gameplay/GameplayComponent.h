@@ -130,6 +130,10 @@ public:
 	//doors
 	bool CanOpenDoor(int32 DoorLevel) const;
 	void OpenedDoor(int32 DoorLevel);
+	
+	//blockage
+	bool CanOpenBlockage();
+	void OpenedBlockage();
 
 private:
 	ALttnCharacter* GetCharacter();
