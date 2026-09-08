@@ -170,10 +170,10 @@ float ALttnCharacter::TakeDamage(const float Damage, const FDamageEvent& DamageE
 	{
 		return Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 	}
-	// if (DamageCauser->IsA(ABotCharacter::StaticClass()))
-	// {
-	Client_TakeDamage(Damage, DamageCauser);
-	// }
+	if (DamageCauser->IsA(ABotCharacter::StaticClass()))
+	{
+		Client_TakeDamage(Damage, DamageCauser);
+	}
 	return Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 }
 
@@ -760,18 +760,19 @@ void ALttnCharacter::Pause()
 
 void ALttnCharacter::FireStarted()
 {
+	bool bDelay = false;
 	if (!bIsAiming)
 	{
-		//todo just play anim and delay by 1sec
+		bDelay = true;
 		AimStarted();
 		bAimStartedByFire = true;
 	}
-	GameplayComponent->StartFiring();
+	GameplayComponent->StartFiring(bDelay);
 }
 
 void ALttnCharacter::FireStopped()
 {
-	if (bIsAiming)
+	if (bAimStartedByFire)
 	{
 		AimFinished();
 	}

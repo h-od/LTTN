@@ -104,7 +104,7 @@ public:
 	void LevelStarted();
 	void SetMaxHealth();
 	void TakeDamage(const float Damage,const FVector& DamageDirection);
-	void StartFiring();
+	void StartFiring(const bool bInitialDelay);
 	void StopFiring();
 	void Reload();
 	void SetIsMoving(bool bMoving);

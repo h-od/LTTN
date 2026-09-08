@@ -91,22 +91,19 @@ void UGameplayComponent::TakeDamage(const float Damage, const FVector& DamageDir
 	}
 }
 
-void UGameplayComponent::StartFiring()
+void UGameplayComponent::StartFiring(const bool bInitialDelay)
 {
-	//if !isAiming then aim first then fire
-
-	if (bIsReloading or bFireRateCooldownActive /*or bIsAiming*/)
+	if (bIsReloading or bFireRateCooldownActive)
 	{
-		//TODO cant if sprinting, need to be aiming too
 		return;
 	}
 	if (PlayerManager.CanFire())
 	{
 		bFireRateCooldownActive = true;
 		bShouldStopFiring = false;
-		TryFire(); //TODO do we need this?
+
 		GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &UGameplayComponent::StartedFiring,
-		                                       PlayerManager.Weapon.FireRate, true);
+		                                       PlayerManager.Weapon.FireRate, true, bInitialDelay ? 0.25f : 0.0f);
 	}
 }
 
