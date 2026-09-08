@@ -10,8 +10,10 @@ enum class EMainNavigation : uint8
 	StartJoin UMETA(DisplayName = "StartJoin"),
 	
 	Host UMETA(DisplayName = "Host"),
-	BackFromHost UMETA(DisplayName = "Host"),
+	BackFromHost UMETA(DisplayName = "BackFromHost"),
 	Join UMETA(DisplayName = "Join"),
-	BackFromJoin UMETA(DisplayName = "Join"),
+	BackFromJoin UMETA(DisplayName = "BackFromJoin"),
+	Customise UMETA(DisplayName = "Customise"), 
+	BackFromCustomise UMETA(DisplayName = "BackFromCustomise"), 
 	Settings UMETA(DisplayName = "Settings")
 };

@@ -2,6 +2,7 @@
 
 #include "MainNavigation.h"
 #include "Char0/Blueprint/UI/Widget/Settings/SettingsWidget.h"
+#include "Customise/CustomiseWidget.h"
 #include "Host/HostWidget.h"
 #include "Join/JoinWidget.h"
 #include "Start/StartWidget.h"
@@ -48,6 +49,10 @@ void UMainWidget::StartNavigation(const EMainNavigation Destination)
 		HideStart();
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UMainWidget::ShowJoin, 0.5f, false);
 		break;
+	case EMainNavigation::Customise:
+		HideStart();
+		ShowCustomise();
+		break;
 	case EMainNavigation::Settings:
 		HideStart();
 		ShowSettings();
@@ -58,6 +63,10 @@ void UMainWidget::StartNavigation(const EMainNavigation Destination)
 		break;
 	case EMainNavigation::BackFromJoin:
 		HideJoin();
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UMainWidget::ShowStart, 0.5f, false);
+		break;
+	case EMainNavigation::BackFromCustomise:
+		HideCustomise();
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UMainWidget::ShowStart, 0.5f, false);
 		break;
 	}
@@ -87,6 +96,14 @@ void UMainWidget::ShowJoin()
 	Widget->Unfade();
 }
 
+void UMainWidget::ShowCustomise()
+{
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	UCustomiseWidget* Widget = GetCustomiseWidget();
+	Widget->NavigationDelegate.BindUObject(this, &UMainWidget::StartNavigation);
+	Widget->Unfade();
+}
+
 void UMainWidget::ShowSettings()
 {
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
@@ -112,6 +129,13 @@ void UMainWidget::HideHost()
 void UMainWidget::HideJoin()
 {
 	UJoinWidget* Widget = GetJoinWidget();
+	Widget->NavigationDelegate.Unbind();
+	Widget->Fade();
+}
+
+void UMainWidget::HideCustomise()
+{
+	UCustomiseWidget* Widget = GetCustomiseWidget();
 	Widget->NavigationDelegate.Unbind();
 	Widget->Fade();
 }
@@ -159,6 +183,16 @@ UJoinWidget* UMainWidget::GetJoinWidget()
 		JoinWidget->AddToViewport();
 	}
 	return JoinWidget;
+}
+
+UCustomiseWidget* UMainWidget::GetCustomiseWidget()
+{
+	if (!CustomiseWidget)
+	{
+		CustomiseWidget = CreateWidget<UCustomiseWidget>(this, CustomiseWidgetClass);
+		CustomiseWidget->AddToViewport();
+	}
+	return CustomiseWidget;
 }
 
 USettingsWidget* UMainWidget::GetSettingsWidget()

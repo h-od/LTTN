@@ -104,20 +104,20 @@ private:
 	FVector LandVelocity;
 	UPROPERTY()
 	bool bIsRagdolling;
-	
+
 	UPROPERTY()
 	int32 DoorToOpen;
 	UPROPERTY()
 	int32 DoorToOpenLevel;
-	
+
 	UPROPERTY()
 	int32 BlockageToOpen;
-	
+
 	UPROPERTY()
 	EInteractableType Interactable = EInteractableType::NoInteraction;
 	UPROPERTY()
 	int32 PlayerToRevive;
-	
+
 	UPROPERTY()
 	UPauseWidget* PauseWidget;
 
@@ -125,7 +125,7 @@ protected:
 	// Config
 	UPROPERTY(EditDefaultsOnly, Category="Widget")
 	TSubclassOf<UPauseWidget> PauseWidgetClass;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category="Movement")
 	UCurveFloat* StrafeSpeedMapCurve;
 
@@ -139,7 +139,7 @@ protected:
 	// Animations
 	UPROPERTY(EditDefaultsOnly, Category="Animation")
 	UAnimMontage* AimMontage;
-	
+
 	// InputActions
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	UInputAction* MoveAction;
@@ -189,7 +189,7 @@ public:
 	virtual void Landed(const FHitResult& Hit) override;
 
 	virtual float TakeDamage(float Damage, const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-	
+
 	UFUNCTION(Client, Reliable)
 	void Client_TakeDamage(float Damage, AActor* DamageCauser);
 	void Client_TakeDamage_Implementation(float Damage, AActor* DamageCauser);
@@ -230,39 +230,42 @@ public:
 	void ShowMaxPlayerProjectiles(int32 MaxProjectiles) const;
 	void ShowMaxWeaponProjectiles(int32 MaxProjectiles) const;
 	void ShowPlayerProjectiles(int32 Projectiles) const;
-	
+
 	//InteractableActor
 	void CanInteract(EInteractableType Type);
 	void CantInteract();
-	
+
 	void CanOpenDoor(int32 DoorNumber, int32 DoorLevel);
 	void CanOpenBlockage(int32 BlockageNumber);
-	
+
 	void CanRevive(int32 RevivableId);
 	UFUNCTION(Client, Reliable)
 	void Client_CanRevive(int32 RevivableId);
 	void Client_CanRevive_Implementation(int32 RevivableId);
-	
+
 	void CantRevive();
 	UFUNCTION(Client, Reliable)
 	void Client_CantRevive();
 	void Client_CantRevive_Implementation();
-	
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void EnableCollisionSphere(bool bEnabled);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetMeshColours(FLinearColor Lights, FLinearColor Body, FLinearColor Joints);
+	
 protected:
 	UFUNCTION(BlueprintCallable)
 	void OverlapStart(AActor* Overlapping);
-	
+
 	UFUNCTION(BlueprintCallable)
 	void OverlapEnd(AActor* Overlapping);
-	
+
 private:
 	UFUNCTION(Client, Reliable)
 	void Client_Possessed();
 	void Client_Possessed_Implementation();
-	
+
 	UFUNCTION(Client, Reliable)
 	void Client_SetNewPlayerInfo();
 	void Client_SetNewPlayerInfo_Implementation();
@@ -277,14 +280,14 @@ private:
 	void JumpTriggered();
 	void JumpStarted();
 	void AimStarted();
-	
+
 	UFUNCTION(Server, Reliable)
 	void Server_AimStarted();
 	void Server_AimStarted_Implementation();
 	UFUNCTION(NetMulticast, Reliable)
 	void MC_AimStarted();
 	void MC_AimStarted_Implementation();
-	
+
 	void AimFinished();
 	UFUNCTION(Server, Reliable)
 	void Server_AimFinished();
@@ -292,7 +295,7 @@ private:
 	UFUNCTION(NetMulticast, Reliable)
 	void MC_AimFinished();
 	void MC_AimFinished_Implementation();
-	
+
 	void Interact();
 	void Pause();
 	void FireStarted();
@@ -343,7 +346,7 @@ private:
 
 	UFUNCTION()
 	void DidLand();
-	
+
 	UFUNCTION(Client, Reliable)
 	void Client_SetMaxHealth();
 	void Client_SetMaxHealth_Implementation();

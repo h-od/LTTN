@@ -19,6 +19,7 @@
 #include "Char0/Blueprint/Data/Movement/Properties_Animation.h"
 #include "Char0/Blueprint/Data/Sound/SoundParams.h"
 #include "Char0/Blueprint/Data/Sound/SoundSide.h"
+#include "Char0/Blueprint/GameInstance/LttnGameInstance.h"
 #include "Char0/Blueprint/UI/Widget/Pause/PauseWidget.h"
 #include "Component/Gameplay/GameplayComponent.h"
 #include "Component/Movement/LttnMovementComponent.h"

@@ -18,6 +18,11 @@ void UStartWidget::ShowJoin() const
 	NavigationDelegate.ExecuteIfBound(EMainNavigation::Join);
 }
 
+void UStartWidget::ShowCustomise() const
+{
+	NavigationDelegate.ExecuteIfBound(EMainNavigation::Customise);
+}
+
 void UStartWidget::ShowSettings() const
 {
 	NavigationDelegate.ExecuteIfBound(EMainNavigation::Settings);

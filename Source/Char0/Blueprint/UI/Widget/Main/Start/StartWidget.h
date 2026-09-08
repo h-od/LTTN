@@ -33,5 +33,7 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void ShowJoin() const;
 	UFUNCTION(BlueprintCallable)
+	void ShowCustomise() const;
+	UFUNCTION(BlueprintCallable)
 	void ShowSettings() const;
 };

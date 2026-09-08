@@ -4,6 +4,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MainWidget.generated.h"
 
+class UCustomiseWidget;
 enum class EMainNavigation : uint8;
 class UJoinWidget;
 class UHostWidget;
@@ -24,6 +25,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UJoinWidget> JoinWidgetClass;
 	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UCustomiseWidget> CustomiseWidgetClass;
+	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<USettingsWidget> SettingsWidgetClass;
 	
 private:
@@ -33,6 +36,8 @@ private:
 	TObjectPtr<UHostWidget> HostWidget;
 	UPROPERTY()
 	TObjectPtr<UJoinWidget> JoinWidget;
+	UPROPERTY()
+	TObjectPtr<UCustomiseWidget> CustomiseWidget;
 	UPROPERTY()
 	TObjectPtr<USettingsWidget> SettingsWidget;
 	
@@ -59,18 +64,21 @@ private:
 	void ShowStart();
 	void ShowSettings();
 	void ShowJoin();
+	void ShowCustomise();
 	void ShowHost();
 	
 	void HideStart();
 	void HideHost();
 	void HideJoin();
+	void HideCustomise();
 	UFUNCTION()
 	void BackFromSettings();
-	
+
 	void ShowGameOnlyUI() const;
 	
 	UStartWidget* GetStartWidget();
 	UHostWidget* GetHostWidget();
 	UJoinWidget* GetJoinWidget();
+	UCustomiseWidget* GetCustomiseWidget();
 	USettingsWidget* GetSettingsWidget();
 };

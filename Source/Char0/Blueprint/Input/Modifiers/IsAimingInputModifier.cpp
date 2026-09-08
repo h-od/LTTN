@@ -10,7 +10,7 @@ FInputActionValue UIsAimingInputModifier::ModifyRaw_Implementation(const UEnhanc
 	{
 		Settings = PlayerInput->GetOwningLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>()->GetUserSettings<ULttnInputUserSettings>();
 	}
-	Settings->SetIsAiming(CurrentValue.Get<bool>()); //todo or float?
+	Settings->SetIsAiming(CurrentValue.Get<bool>()); 
 	
 	return Super::ModifyRaw_Implementation(PlayerInput, CurrentValue, DeltaTime);
 }

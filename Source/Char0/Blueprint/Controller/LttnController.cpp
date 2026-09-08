@@ -3,6 +3,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Char0/Blueprint/Character/LttnCharacter.h"
 #include "Char0/Blueprint/Character/Spectate/SpectateCharacter.h"
+#include "Char0/Blueprint/GameInstance/LttnGameInstance.h"
 #include "Char0/Blueprint/GameMode/LttnGameMode.h"
 #include "Char0/Blueprint/State/Game/LttnGameState.h"
 #include "Char0/Blueprint/UI/HUD/LttnHud.h"
@@ -255,26 +256,19 @@ void ALttnController::Client_OnPossess_Implementation(const bool bIsSpectate)
 {
 	if (IsLocalPlayerController())
 	{
-		// if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-		// {
-		// 	if (bIsSpectate)
-		// 	{
-		// 		Subsystem->RemoveMappingContext(MappingContext);
-		// 		Subsystem->AddMappingContext(SpectateMappingContext, 0);
-		// 	}
-		// 	else
-		// 	{
-		// 		Subsystem->AddMappingContext(MappingContext, 0);
-		// 		Subsystem->RemoveMappingContext(SpectateMappingContext);
-		// 	}
-		// 	UEnhancedInputUserSettings* Settings = Subsystem->GetUserSettings();
-		//
-		// 	if (Settings; !Settings->IsMappingContextRegistered(MappingContext))
-		// 	{
-		// 		Settings->RegisterInputMappingContext(MappingContext);
-		// 	}
-		// }
+		const ULttnGameInstance* GameInstance = Cast<ULttnGameInstance>(GetGameInstance());
+		Server_SetMeshColors(GameInstance->Lights, GameInstance->Body, GameInstance->Joints);
 	}
+}
+
+void ALttnController::Server_SetMeshColors_Implementation(const FLinearColor Lights, const FLinearColor Body, const FLinearColor Joints)
+{
+	MC_SetMeshColors(Lights, Body, Joints);
+}
+
+void ALttnController::MC_SetMeshColors_Implementation(const FLinearColor Lights, const FLinearColor Body, const FLinearColor Joints)
+{
+	GetLttnCharacter()->SetMeshColours(Lights, Body, Joints);
 }
 
 void ALttnController::Server_OpenDoor_Implementation(int32 DoorNumber)
@@ -386,4 +380,14 @@ ALttnGameMode* ALttnController::GetLttnGameMode()
 	}
 
 	return LttnGameMode;
+}
+
+ALttnCharacter* ALttnController::GetLttnCharacter()
+{
+	if (!LttnCharacter)
+	{
+		LttnCharacter = Cast<ALttnCharacter>(GetCharacter());
+	}
+
+	return LttnCharacter;
 }

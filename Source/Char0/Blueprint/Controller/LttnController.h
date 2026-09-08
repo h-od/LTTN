@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Char0/Blueprint/Data/Player/PlayerManager.h"
+#include "Char0/Blueprint/GameInstance/LttnGameInstance.h"
 #include "GameFramework/PlayerController.h"
 #include "LttnController.generated.h"
 
@@ -112,6 +113,14 @@ private:
 	void Client_OnPossess_Implementation(bool bIsSpectate);
 	
 	UFUNCTION(Server, Reliable)
+	void Server_SetMeshColors(FLinearColor Lights, FLinearColor Body, FLinearColor Joints);
+	void Server_SetMeshColors_Implementation(FLinearColor Lights, FLinearColor Body, FLinearColor Joints);
+	
+	UFUNCTION(NetMulticast, Reliable)
+	void MC_SetMeshColors(FLinearColor Lights, FLinearColor Body, FLinearColor Joints);
+	void MC_SetMeshColors_Implementation(FLinearColor Lights, FLinearColor Body, FLinearColor Joints);
+	
+	UFUNCTION(Server, Reliable)
 	void Server_OpenDoor(int32 DoorNumber);
 	void Server_OpenDoor_Implementation(int32 DoorNumber);
 	
@@ -157,4 +166,5 @@ private:
 	void Client_GameOver_Implementation(bool bIsMulti);
 	
 	ALttnGameMode* GetLttnGameMode();
+	ALttnCharacter* GetLttnCharacter();
 };
